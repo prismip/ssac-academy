@@ -39,6 +39,28 @@ def show_contacts(contacts):
     for c in contacts:
         print("[{0}][{1}][{2}][{3}]".format(c['no'], c['name'], c['email'], c['phone']))
 
+def search_contacts():
+    # 검색 결과를 저장할 리스트 만들기
+    searched_result = []
+    # 입력 (이름입력)
+    name = input('검색할 연락처 이름 : ')
+    # 연락처 목록을 순회하면서 입력받은 이름과 일치하는 이름의 연락처 찾기   abc == abc / abc == a~, ~b~
+    # 찾은 연락처를 검색 결과 리스트에 추가
+    for c in contacts:
+        # if name == c['name']: # 완전 일치 검색
+        if name in c['name']: # 부분 일치 검색
+            searched_result.append(c)
+
+    return searched_result
+
+def delete_contact(no_to_delete):
+    # 삭제 - 목록을 순회하면서 일치하는 번호의 연락처 삭제
+    for c in contacts:
+        if c['no'] == no_to_delete:
+            contacts.remove(c)
+            return True # 삭제 성공
+
+    return False # 삭제 실패
 
 def do_manage():
     '연락처 관리 메인 로직 구현 메서드'
@@ -57,8 +79,34 @@ def do_manage():
             contact = input_contact()
             contacts.append(contact)
 
+        elif selected_no == 3: # 삭제 선택
+            # 삭제를 위한 검색
+            searched_result = search_contacts()
+            if len(searched_result) == 0:
+                print("검색 실패")
+            else:
+                # 검색 결과 표시
+                print("[ 삭제 대상 연락처 목록 ]")
+                show_contacts(searched_result)
+
+                # 삭제 대상 선택 (사용자 입력 - 번호)
+                no = input('삭제할 연락처의 번호 : ')
+                no = int(no)
+                
+                success = delete_contact(no)
+                if success:
+                    print("삭제했습니다.")
+                else:
+                    print("삭제 실패")
+
         elif selected_no == 4: # 목록 보기
             show_contacts(contacts)
+
+        elif selected_no == 5: # 검색
+            
+            searched_result = search_contacts()
+            # 검색 결과 리스트를 출력
+            show_contacts(searched_result)
 
         else:
             print("작업 준비중..")
