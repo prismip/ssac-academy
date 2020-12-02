@@ -19,6 +19,27 @@ def show_menu():
     selected_no = input("SELECT MENU NO : ")
     return int(selected_no)
 
+def input_contact():
+    # 입력
+    global next_no # 이 변수는 현재 함수의 지역 변수가 아니라 외부 변수입니다.
+    name = input("이름을 입력하세요: ")
+    phone = input("전화번호를 입력하세요: ")
+    email = input("이메일을 입력하세요: ")
+    no = next_no
+    next_no += 1
+    contact = { 'no': no, 'name' : name, 'phone': phone, 'email': email }
+    return contact
+
+def show_contacts(contacts):
+    if len(contacts) == 0:
+        print('등록된 연락처가 없습니다.')
+        return # 함수를 즉시 종료하는 명령
+
+    print("[ 연락처 목록 ]")
+    for c in contacts:
+        print("[{0}][{1}][{2}][{3}]".format(c['no'], c['name'], c['email'], c['phone']))
+
+
 def do_manage():
     '연락처 관리 메인 로직 구현 메서드'
 
@@ -33,12 +54,11 @@ def do_manage():
             break
 
         elif selected_no == 1: # 등록 선택
-            # 입력
-            name = input("이름을 입력하세요: ")
-            phone = input("전화번호를 입력하세요: ")
-            email = input("이메일을 입력하세요: ")
-            contact = { 'no': 1, 'name' : name, 'phone': phone, 'email': email }
-            pass
+            contact = input_contact()
+            contacts.append(contact)
+
+        elif selected_no == 4: # 목록 보기
+            show_contacts(contacts)
 
         else:
             print("작업 준비중..")
