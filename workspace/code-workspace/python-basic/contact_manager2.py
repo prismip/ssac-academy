@@ -135,6 +135,7 @@ class ContactManager:
             else:
                 print("작업 준비중..")
 
-
-cm = ContactManager()
-cm.do_manage()
+# print(__name__)
+if __name__ == "__main__":
+    cm = ContactManager()
+    cm.do_manage()
