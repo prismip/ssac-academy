@@ -3,6 +3,21 @@
 # 연락처 데이터 내용 : 번호(자동증가처리), 이름, 전화번호, 이메일
 # 연락처 데이터 형식 : 리스트 or 딕셔너리 -> 딕서너리 사용 -> { "no": 1, "name": 'id', "email": 'e', "phone": 'p' }
 
+class Contact:
+    '연락처 정보를 저장하는 클래스'
+
+    def __init__(self, no, name, email, phone):
+        self.no = no
+        self.name = name
+        self.email = email
+        self.phone = phone
+
+    def to_dict(self):
+        return { 'no': self.no, 'name': self.name, 'email': self.email, 'phone': self.phone }
+
+    def contact_info(self):
+        return "[{0}][{1}][{2}][{3}]".format(self.no, self.name, self.email, self.phone)
+
 class ContactManager:
 
     def __init__(self):
@@ -27,7 +42,9 @@ class ContactManager:
         email = input("이메일을 입력하세요: ")
         no = self.next_no
         self.next_no += 1
-        contact = { 'no': no, 'name' : name, 'phone': phone, 'email': email }
+        # contact = { 'no': no, 'name' : name, 'phone': phone, 'email': email }
+        # c = Contact(**contact)
+        contact = Contact(no, name, email, phone)
         return contact
 
     def show_contacts(self, contacts=None):
@@ -43,7 +60,8 @@ class ContactManager:
         for c in contacts:
             # print("[{0}][{1}][{2}][{3}]".format(c['no'], c['name'], c['email'], c['phone']))
             # print("[{no}][{name}][{email}][{phone}]".format(no=c['no'], name=c['name'], email=c['email'], phone=c['phone']))
-            print("[{no}][{name}][{email}][{phone}]".format(**c))
+            # print("[{no}][{name}][{email}][{phone}]".format(**c))
+            print(c.contact_info())
 
     def search_contacts(self):
         # 검색 결과를 저장할 리스트 만들기
@@ -54,7 +72,7 @@ class ContactManager:
         # 찾은 연락처를 검색 결과 리스트에 추가
         for c in self.contacts:
             # if name == c['name']: # 완전 일치 검색
-            if name in c['name']: # 부분 일치 검색
+            if name in c.name: # 부분 일치 검색
                 searched_result.append(c)
 
         return searched_result
@@ -62,7 +80,7 @@ class ContactManager:
     def delete_contact(self, no_to_delete):
         # 삭제 - 목록을 순회하면서 일치하는 번호의 연락처 삭제
         for c in self.contacts:
-            if c['no'] == no_to_delete:
+            if c.no == no_to_delete:
                 self.contacts.remove(c)
                 return True # 삭제 성공
 
