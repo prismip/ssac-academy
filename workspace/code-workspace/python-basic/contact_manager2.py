@@ -36,12 +36,17 @@ class ContactManager:
         selected_no = input("SELECT MENU NO : ")
         return int(selected_no)
 
-    def input_contact(self):
+    def input_contact(self, is_modify=False):
         name = input("이름을 입력하세요: ")
         phone = input("전화번호를 입력하세요: ")
         email = input("이메일을 입력하세요: ")
-        no = self.next_no
-        self.next_no += 1
+        
+        if not is_modify : 
+            no = self.next_no
+            self.next_no += 1
+        else:
+            no = -1
+        
         # contact = { 'no': no, 'name' : name, 'phone': phone, 'email': email }
         # c = Contact(**contact)
         contact = Contact(no, name, email, phone)
@@ -102,6 +107,32 @@ class ContactManager:
             elif selected_no == 1: # 등록 선택
                 contact = self.input_contact()
                 self.contacts.append(contact)
+
+            elif selected_no == 2: # 수정 선택
+                # 수정을 위한 검색
+                searched_result = self.search_contacts()
+                if len(searched_result) == 0:
+                    print("검색 실패")
+                else:
+                    # 검색 결과 표시
+                    print("[ 수정 대상 연락처 목록 ]")
+                    self.show_contacts(searched_result)
+
+                    # 수정 대상 선택 (사용자 입력 - 번호)
+                    no = input('수정할 연락처의 번호 : ')
+                    no = int(no)
+                   
+                    # 순회하면서 일치하는 연락처를 발견하면 값 변경
+                    for c in self.contacts:
+                        if c.no == no:
+                             # 수정할 연락처 정보 입력
+                            contact = self.input_contact(is_modify=True)
+                            c.name = contact.name
+                            c.phone = contact.phone
+                            c.email = contact.email
+                            break
+                    else:
+                        print("수정 실패")
 
             elif selected_no == 3: # 삭제 선택
                 # 삭제를 위한 검색
