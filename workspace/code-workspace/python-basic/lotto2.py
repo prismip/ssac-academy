@@ -47,12 +47,23 @@ class Lotto:
     def start_game(self):
         cnt = self.input_game_count()
 
+        numbers_list = []
         for _ in range( cnt ):
 
             numbers = self.select_winning_numbers()
 
             numbers.sort()
             self.show_numbers(numbers)
+
+            numbers_list.append(numbers)
+
+        # 추출된 번호를 파일로 저장
+        with open('numbers.txt', 'wt') as f:
+            for numbers in numbers_list:
+                for n in numbers:
+                    f.write("[{0}]".format(n))
+                f.write("\n")
+
 
 if __name__ == '__main__':
     lotto = Lotto()

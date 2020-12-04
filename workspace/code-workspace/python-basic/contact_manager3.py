@@ -108,8 +108,6 @@ class ContactManager:
     def do_manage(self):
         '연락처 관리 메인 로직 구현 메서드'
 
-        import pickle
-
         while True:
 
             # 사용자에게 선택할 수 메뉴 표시 -> 사용자 선택
