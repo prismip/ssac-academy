@@ -76,7 +76,62 @@ ORDER BY height DESC, name ASC;
 -- 11. addr 조회 ( 사용자의 출신 지역 조회 )
 SELECT DISTINCT addr -- DISTINCT : 중복되 데이터는 결과에 한 개만 포함하도록
 FROM usertbl;
- 
+
+-- 작업 데이터베이스 변경 (employees)
+USE employees;
+
+-- 12-1. 입사일자가 빠른 10명의 사원 조회 
+
+-- DESC employees;
+SELECT emp_no, first_name, last_name, hire_date
+FROM employees
+ORDER BY hire_date ASC
+LIMIT 10;
+
+-- 12-2. 입사일자 순위가 11번째 부터 20번째까지의 사원 조회 
+
+SELECT emp_no, first_name, last_name, hire_date
+FROM employees
+ORDER BY hire_date ASC
+LIMIT 10, 10; -- 시작위치, 갯수 -> 11 ~ 20
+
+-- 작업 데이터베이스 변경 (sqldb)
+USE sqldb;
+
+-- 13. 테이블 복사 (존재하는 테이블의 데이터를 복사해서 새 테이블에 저장)
+CREATE TABLE buytbl2 (SELECT * FROM buytbl);
+SELECT * FROM buytbl2;
+
+CREATE TABLE buytbl3 (SELECT num, userid FROM buytbl);
+SELECT * FROM buytbl3;
+
+-- 14. 구매 가격 평균,  구매 수량 평균 조회
+
+SELECT AVG(price), AVG(amount) 
+FROM buytbl;
+
+SELECT AVG(price), MIN(price), MAX(price), COUNT(price) 
+FROM buytbl;
+
+SELECT AVG(price) AS '가격평균', 
+	   MIN(price) '최소가격', 
+       MAX(price) '최대가격', 
+       COUNT(price) '개수' 
+FROM buytbl;
+
+-- 15. 고객별 거래 실적 평균
+
+SELECT userid, AVG(price) '평균거래액', COUNT(price) '거래건수'
+FROM buytbl
+GROUP BY userid; 
+
+SELECT userid, AVG(price) '평균거래액', COUNT(price) '거래건수'
+FROM buytbl
+-- WHERE AVG(price) > 100
+GROUP BY userid
+HAVING AVG(price) > 100 -- HAVING : GROUP BY 결과에 대한 조건 거맛
+
+
  
  
  
