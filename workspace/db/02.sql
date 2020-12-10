@@ -129,8 +129,23 @@ SELECT userid, AVG(price) '평균거래액', COUNT(price) '거래건수'
 FROM buytbl
 -- WHERE AVG(price) > 100
 GROUP BY userid
-HAVING AVG(price) > 100 -- HAVING : GROUP BY 결과에 대한 조건 거맛
+HAVING AVG(price) > 100; -- HAVING : GROUP BY 결과에 대한 조건 
 
+-- 16. 
+	
+SELECT num, groupname, SUM(price * amount) AS '합계'
+FROM buytbl
+GROUP BY groupname, num;
+
+SELECT num, groupname, SUM(price * amount) AS '합계'
+FROM buytbl
+GROUP BY groupname, num
+WITH ROLLUP;
+
+SELECT groupname, SUM(price * amount) AS '합계'
+FROM buytbl
+GROUP BY groupname
+WITH ROLLUP;
 
  
  
