@@ -38,3 +38,66 @@ VALUES ('송강호',  40);
 
 SELECT * FROM testtbl2;
 
+-- 5. 데이터 수정
+
+SELECT * FROM testtbl2;
+
+UPDATE testtbl2
+SET age = 50
+WHERE id = 3;
+
+SELECT * FROM testtbl2;
+
+UPDATE testtbl2
+SET username = '김윤석', age = 55
+WHERE id = 1;
+
+SELECT * FROM testtbl2;
+
+-- 6. 데이터 삭제
+
+DELETE FROM testtbl2
+WHERE id = 2;
+
+SELECT * FROM testtbl2;
+
+INSERT INTO testtbl2
+VALUES (NULL, '한석규', CURRENT_TIMESTAMP, 57);
+
+SELECT * FROM testtbl2;
+
+TRUNCATE TABLE testtbl2; -- DELETE FROM testtbl2;
+
+SELECT * FROM testtbl2;
+
+-- 7. 다중 행 생성
+
+INSERT INTO testtbl2 (username, age) 
+VALUES 	('한석규', 55),
+		('김윤석', 53),
+		('송강호',  40);
+        
+SELECT * FROM testtbl2;
+
+-- 8. 다른 테이블의 데이터를 복사해서 삽입
+
+CREATE TABLE testtbl3 (
+  id 		INT 		NOT NULL AUTO_INCREMENT,
+  username 	VARCHAR(50) NOT NULL,
+  age 		INT 		NOT NULL,
+  regdate	DATETIME	DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+);
+
+SELECT * FROM testtbl3;
+
+INSERT INTO testtbl3 (username, age, regdate)
+SELECT username, age, regdate FROM testtbl2;
+
+SELECT * FROM testtbl3;
+
+
+
+
+
+
