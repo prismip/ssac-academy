@@ -144,6 +144,12 @@ FROM empTbl ec
 LEFT OUTER JOIN empTbl ep
 ON ec.manager = ep.emp;
 
+-- 5
+SELECT * FROM usertbl;
+
+(SELECT * FROM usertbl WHERE birthyear > 1970 ORDER BY birthyear)
+UNION ALL
+(SELECT * FROM usertbl WHERE birthyear <= 1970 ORDER BY birthyear);
 
 
 
