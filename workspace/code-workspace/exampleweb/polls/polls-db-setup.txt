@@ -1,0 +1,36 @@
+CREATE DATABASE IF NOT EXISTS `exampledb`;
+USE `exampledb`;
+
+CREATE TABLE IF NOT EXISTS `polls_question` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `question_text` varchar(500) NOT NULL,
+  `pub_date` datetime DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) 
+
+INSERT INTO `polls_question` (`id`, `question_text`, `pub_date`) VALUES
+	(1, 'what is your hobby?', '2020-12-01 09:30:00'),
+	(2, 'who do you like best?', '2020-12-02 09:30:00'),
+	(3, 'where do you live?', '2020-12-03 09:30:00');
+
+CREATE TABLE IF NOT EXISTS `polls_choice` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `question_id` int NOT NULL,
+  `choice_text` varchar(500) NOT NULL,
+  `votes` int DEFAULT '0',
+  PRIMARY KEY (`id`),
+  FOREIGN KEY (`question_id`) REFERENCES `polls_question` (`id`)
+)
+
+INSERT INTO `polls_choice` (`id`, `question_id`, `choice_text`, `votes`) VALUES
+	(1, 1, 'reading', 0),
+	(2, 1, 'soccer', 0),
+	(3, 1, 'climbing', 0),
+	(4, 2, 'John Doe', 0),
+	(5, 2, 'Jane Doe', 0),
+	(6, 2, 'Mary Doe', 0),
+	(7, 3, 'Seoul', 0),
+	(8, 3, 'Busan', 0),
+	(9, 3, 'Daejeon', 0);
+
+
