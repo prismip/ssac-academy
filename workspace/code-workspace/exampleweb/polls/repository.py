@@ -61,3 +61,14 @@ class PollsRepository:
         conn.close()
 
         return results
+
+    def update_choice_votes(self, choice_id):
+        conn = pymysql.connect(**self.connection_info)
+        cursor = conn.cursor()
+
+        sql = "update polls_choice set votes = votes + 1 where id = %s"
+        cursor.execute(sql, (choice_id, ))
+
+        conn.commit()
+        
+        conn.close()

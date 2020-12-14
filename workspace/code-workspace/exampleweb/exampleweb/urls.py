@@ -24,5 +24,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     
     # path('polls/', views.index) # 직접 요청과 함수를 연결
-    path('polls/', include('polls.urls')), # 요청을 다른 요청 - 처리기 매핑 설정파일로 전달
+    path('polls/', include(('polls.urls', 'polls'))), # 요청을 다른 요청 - 처리기 매핑 설정파일로 전달
 ]
