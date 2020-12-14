@@ -1,6 +1,6 @@
 import pymysql
 
-from polls.models import Question
+from polls.models import Question, Choice
 
 class PollsRepository:
     """
@@ -27,3 +27,37 @@ class PollsRepository:
         conn.close()
 
         return result
+
+    def select_question_by_id(self, question_id):
+        conn = pymysql.connect(**self.connection_info)
+        cursor = conn.cursor()
+
+        sql = "select id, question_text, pub_date from polls_question where id = %s"
+        cursor.execute(sql, (question_id, ))
+
+        row = cursor.fetchone() # 반환 값은 tuple (...)
+        
+        # q = Question(row[0], row[1], row[2])
+        q = Question(*row) # *(1, 2, 3) -> 1, 2, 3
+        
+        conn.close()
+
+        return q
+
+    def select_choice_by_question_id(self, question_id):
+        conn = pymysql.connect(**self.connection_info)
+        cursor = conn.cursor()
+
+        sql = "select id, question_id, choice_text, votes from polls_choice where question_id = %s"
+        cursor.execute(sql, (question_id, ))
+
+        rows = cursor.fetchall() # 반환 값은 tuple (...)
+
+        results = []   
+        for row in rows:
+            c = Choice(*row) # *(1, 2, 3) -> 1, 2, 3
+            results.append(c)
+
+        conn.close()
+
+        return results

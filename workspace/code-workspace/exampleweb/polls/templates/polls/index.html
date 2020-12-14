@@ -4,7 +4,10 @@
 <h2>Hello, Django Polls Quickstart</h2>
 
 <!-- view에서 전달한 데이터를 읽어서 표시하는 코드 구현 -->
-
+<ul>
 {% for question in question_list %}
-    <p>{{ question.question_text }}</p>
+    <li>
+        <a href="/polls/{{ question.id }}">{{ question.question_text }}</a>
+    </li>
 {% endfor %}
+</ul>
