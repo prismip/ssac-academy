@@ -6,7 +6,7 @@ CREATE TABLE IF NOT EXISTS `polls_question` (
   `question_text` varchar(500) NOT NULL,
   `pub_date` datetime DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) 
+) ;
 
 INSERT INTO `polls_question` (`id`, `question_text`, `pub_date`) VALUES
 	(1, 'what is your hobby?', '2020-12-01 09:30:00'),
@@ -20,7 +20,7 @@ CREATE TABLE IF NOT EXISTS `polls_choice` (
   `votes` int DEFAULT '0',
   PRIMARY KEY (`id`),
   FOREIGN KEY (`question_id`) REFERENCES `polls_question` (`id`)
-)
+);
 
 INSERT INTO `polls_choice` (`id`, `question_id`, `choice_text`, `votes`) VALUES
 	(1, 1, 'reading', 0),
