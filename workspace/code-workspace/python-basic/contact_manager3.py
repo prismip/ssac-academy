@@ -97,10 +97,12 @@ class ContactManager:
         return searched_result
 
     def delete_contact(self, no_to_delete):
+        import pymysql
         # 삭제 - 목록을 순회하면서 일치하는 번호의 연락처 삭제
         for c in self.contacts:
             if c.no == no_to_delete:
                 self.contacts.remove(c)
+                
                 return True # 삭제 성공
 
         return False # 삭제 실패

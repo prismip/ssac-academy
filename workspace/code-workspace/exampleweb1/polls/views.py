@@ -47,9 +47,17 @@ def vote(request, question_id):
     # 투표 결과 화면으로 이동 (redirect 이동 : 브라우저로 응답을 보내는데 이 응답이 즉시 다시 서버로 새로운 요청을 보내도록 처리)
     return HttpResponseRedirect(reverse("polls:results", args=(question_id, ))) # reverse : urls.py에 등록된 요청 경로를 가져와서 사용
     
-    
+
 def results(request, question_id):
     # 테스트용 코드
-    return HttpResponse("<h1>Result for Question ({0}) Page</h1>".format(question_id))
- 
+    # return HttpResponse("<h1>Result for Question ({0}) Page</h1>".format(question_id))
+
+    # 1. Question 조회 + Choice 조회
+    repository = PollsRepository()
+    question = repository.select_question_by_id(question_id)
+    choice_list = repository.select_choice_by_question_id(question_id)
+    question.choices = choice_list
+
+    # 2. 템플릿으로 이동 (데이터도 함께 전달)
+    return render(request, 'polls/results.html', { 'question': question })
     

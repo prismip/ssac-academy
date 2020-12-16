@@ -1,0 +1,13 @@
+
+<h1>{{ question.question_text  }}</h1>
+
+<!-- <form action="/polls/{{question.id}}/vote/" method="POST"> -->
+<form action="{% url 'polls:vote' question.id %}" method="POST"> <!-- url : url을 만드는 명령어, 'polls:vote'는 URLConf에서 url을 가져오기, question.id -->
+    {% csrf_token %}
+    {% for choice in question.choices %}
+    <input type="radio" name='choice' value="{{ choice.id }}">{{ choice.choice_text }}
+    {% endfor %}
+    <hr>
+    <input type="submit" value="Vote">
+
+</form>
