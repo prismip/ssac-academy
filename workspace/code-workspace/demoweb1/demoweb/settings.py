@@ -41,6 +41,7 @@ INSTALLED_APPS = [
 
     # custom apps
     'bookmark.apps.BookmarkConfig',
+    'blog.apps.BlogConfig',
 ]
 
 MIDDLEWARE = [
