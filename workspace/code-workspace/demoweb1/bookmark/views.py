@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
 
 from bookmark.models import Bookmark
@@ -16,4 +17,8 @@ class BookmarkLV(ListView):
     # context_object_name = "object_list" : 템플릿으로 전달하는 데이터 이름(변수명), 명시적으로 지정하지 않을 경우 object_list 사용
     # template_name = "bookmark_list.html" : 지정하지 않을 경우 bookmark_list.html
 
+class BookmarkDV(DetailView):
+    model = Bookmark
+    # context_object_name = "object" : 템플릿으로 전달하는 데이터 이름(변수명), 명시적으로 지정하지 않을 경우 object_list 사용
+    # template_name = "bookmark_detail.html" : 지정하지 않을 경우 bookmark_list.html
 

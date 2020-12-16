@@ -1,1 +1,15 @@
-<h1>Bookmark List Page</h1>
+{% extends 'base.html' %}
+
+{% block title %}Bookmark List{% endblock %}
+
+{% block content %}
+
+<h1>Bookmark List</h1>
+
+<ul>
+{% for bookmark in object_list %}
+    <li><a href="/bookmark/{{ bookmark.id }}/">{{ bookmark }}</a></li>
+{% endfor %}
+</ul>
+
+{% endblock %}
