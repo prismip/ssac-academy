@@ -15,11 +15,14 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.http.response import HttpResponse
-from django.urls import path
+from django.urls import path, include
 
 from demoweb.views import HomeView
 
 urlpatterns = [
     path('', HomeView.as_view(), name='home'),
     path('admin/', admin.site.urls),
+
+    # path('bookmark/', None, name="bookmark-index"),
+    path('bookmark/', include('bookmark.urls')), # bookmark 로 시작되는 url 설정 관리는 bookmark/urls.py 에서 처리합니다.
 ]
