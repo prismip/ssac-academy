@@ -2,6 +2,8 @@ from django.shortcuts import render
 
 from django.views.generic import ListView
 from django.views.generic.detail import DetailView
+from django.views.generic import ArchiveIndexView, YearArchiveView, MonthArchiveView
+from django.views.generic import DayArchiveView, TodayArchiveView 
 
 from blog.models import Post
 
@@ -19,3 +21,10 @@ class PostDV(DetailView):
     model = Post
     # template_name = "blog/post_detail.html"   # 명시적으로 지정하지 않을 경우
     # context_object_name = "object"            # 명시적으로 지정하지 않을 경우
+
+
+## Archive Views
+
+class PostAV(ArchiveIndexView):
+    model = Post
+    date_field = 'modify_dt'
