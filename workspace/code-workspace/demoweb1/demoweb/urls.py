@@ -24,5 +24,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
 
     # path('bookmark/', None, name="bookmark-index"),
-    path('bookmark/', include('bookmark.urls')), # bookmark 로 시작되는 url 설정 관리는 bookmark/urls.py 에서 처리합니다.
+    path('bookmark/', include('bookmark.urls')),    # bookmark 로 시작되는 url 설정 관리는 bookmark/urls.py 에서 처리합니다.
+    path('blog/', include('blog.urls')),            # blog 로 시작되는 url 설정 관리는 blog/urls.py 에서 처리합니다.
 ]
