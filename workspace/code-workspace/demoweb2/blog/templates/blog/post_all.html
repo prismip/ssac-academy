@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block title %}Post List{% endblock %}
+
+{% block content %}
+
+    <h1>Post List</h1>
+    <br>
+    {% for post in posts %}
+        <hr>
+        <h3><a href="/blog/post/{{ post.slug }}/">{{ post.title }}</a></h3>
+        {# <h3><a href="{% post.get_absolute_url %}">{{ post.title }}</a></h3> #}
+        {{ post.modify_dt }}
+        <p>{{ post.description }}</p>
+        <br><br>
+    {% endfor %}
+
+    {# page_obj : paging과 관련된 정보를 관리하는 객체 #}
+    {% if page_obj.has_previous %}
+        <a href="?page={{ page_obj.previous_page_number }}">PreviousPage</a>
+    {% endif %}
+
+    &nbsp;&nbsp;[ Page {{ page_obj.number }} of {{  page_obj.paginator.num_pages }} ]&nbsp;&nbsp;
+
+    {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}">NextPage</a>
+    {% endif %}
+
+{% endblock %}
