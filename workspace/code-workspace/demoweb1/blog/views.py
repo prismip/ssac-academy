@@ -1,6 +1,7 @@
 from django.shortcuts import render
 
 from django.views.generic import ListView
+from django.views.generic.detail import DetailView
 
 from blog.models import Post
 
@@ -13,3 +14,8 @@ class PostLV(ListView):
     template_name = "blog/post_all.html"
     context_object_name = "posts"
     paginate_by = 2 # 페이징 처리 설정 (한 화면에 2개씩 표시)
+
+class PostDV(DetailView):
+    model = Post
+    # template_name = "blog/post_detail.html"   # 명시적으로 지정하지 않을 경우
+    # context_object_name = "object"            # 명시적으로 지정하지 않을 경우
