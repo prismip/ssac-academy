@@ -46,6 +46,28 @@
         <form class="form-inline my-2" action="" method="post"> {% csrf_token %}
             <input class="form-control mr-sm-2" type="search" placeholder="global search" name="search_word">
         </form>
+
+        <!-- account box -->
+        <ul class="navbar-nav ml-5 mr-5">
+            <li class="nav-item dropdown mx-1 btn btn-primary">
+                <!--
+                <a class="nav-link dropdown-toggle text-white" href="#" data-toggle="dropdown">
+            	    <i class="fas fa-user"></i>&ensp;&ensp;</a>
+                <div class="dropdown-menu">
+            	    <a class="dropdown-item" href="">Logout</a>
+            	    <a class="dropdown-item" href="">Change Password</a>
+                </div>
+                -->
+                <a class="nav-link dropdown-toggle text-white" href="#" data-toggle="dropdown">
+            	    <i class="fas fa-user"></i>&ensp;Anonymous&ensp;</a>
+                <div class="dropdown-menu">
+            	    <a class="dropdown-item" href="/accounts/login/">Login</a>
+            	    <a class="dropdown-item" href="">Register</a>
+                </div>
+                
+            </li>
+        </ul>
+        <!-- end of account box -->
     </div>
 </nav>
 
