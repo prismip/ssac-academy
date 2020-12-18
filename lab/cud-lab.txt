@@ -1,0 +1,143 @@
+# 1. 모델 구현 
+
+# 1-1. bookmark/models.py
+
+from django.contrib.auth.models import User
+
+owner = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True, verbose_name="OWNER")
+
+# 1-2. blog/models.py
+
+from django.contrib.auth.models import User
+
+owner = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True, verbose_name="OWNER")
+	
+def save(self, *args, **kwargs):
+	self.slug = slugify(self.title, allow_unicode=True)
+	super().save(*args, **kwargs)
+	
+	
+# 2. 데이터베이스에 반영
+
+python manage.py makemigrations 
+python manage.py migrate
+
+python manage.py sqlmigrate bookmark 000x
+python manage.py sqlmigrate blog 000x
+
+
+# 3. demoweb/views.py
+
+from django.contrib.auth.mixins import AccessMixin
+
+class OwnerOnlyMixin(AccessMixin):
+    raise_exception = True
+    permission_denied_message = "Owner only can update/delete the object"
+
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        if self.request.user != self.object.owner:
+            self.handle_no_permission()
+        return super().get(request, *args, **kwargs)
+
+4-1.
+
+    # Example /bookmark/add/
+    path('add/', BookmarkCreateView.as_view(), name='add'),
+	
+	class BookmarkCreateView(LoginRequiredMixin, CreateView): 
+		model = Bookmark 
+		fields = ['title', 'url'] 
+		success_url = reverse_lazy('bookmark:index') 
+
+		def form_valid(self, form): 
+			form.instance.owner = self.request.user 
+			return super().form_valid(form) 
+		
+4-2.		
+
+    # Example /bookmark/change/
+    path('change/', BookmarkChangeLV.as_view(), name='change'),
+	
+	class BookmarkChangeLV(LoginRequiredMixin, ListView): 
+		template_name = 'bookmark/bookmark_change_list.html' 
+
+		def get_queryset(self):
+			return Bookmark.objects.filter(owner=self.request.user)
+		
+4-3.
+
+    # Example /bookmark/99/update
+    path('<int:pk>/update/', BookmarkUpdateView.as_view(), name='update'),
+	
+	class BookmarkUpdateView(OwnerOnlyMixin, UpdateView): 
+		model = Bookmark 
+		fields = ['title', 'url'] 
+		success_url = reverse_lazy('bookmark:index') 
+	
+4-4.
+
+    # Example /bookmark/99/delete
+    path('<int:pk>/delete/', BookmarkDeleteView.as_view(), name="delete"),
+	
+	class BookmarkDeleteView(OwnerOnlyMixin, DeleteView): 
+		model = Bookmark 
+		success_url = reverse_lazy('bookmark:index')
+	
+	
+5-1.
+
+    # Example: /blog/add/
+    path('add/',
+         views.PostCreateView.as_view(), name="add",
+    ),
+	
+	class PostCreateView(LoginRequiredMixin, CreateView):
+		model = Post
+		# fields = ['title', 'slug', 'description', 'content', 'tags']
+		fields = ['title', 'slug', 'description', 'content']
+		initial = {'slug': 'auto-filling-do-not-input'} 
+		#fields = ['title', 'description', 'content', 'tags'] 
+		success_url = reverse_lazy('blog:index')
+
+		def form_valid(self, form):
+			form.instance.owner = self.request.user
+			return super().form_valid(form)
+		
+5-2		
+
+    # Example: /blog/change/
+    path('change/',
+         views.PostChangeLV.as_view(), name="change",
+    ),
+	
+	class PostChangeLV(LoginRequiredMixin, ListView):
+		template_name = 'blog/post_change_list.html'
+
+		def get_queryset(self):
+			return Post.objects.filter(owner=self.request.user)
+		
+
+5-3.
+
+    # Example: /blog/99/update/
+    path('<int:pk>/update/',
+         views.PostUpdateView.as_view(), name="update",
+    ),
+	
+	class PostUpdateView(OwnerOnlyMixin, UpdateView):
+		model = Post
+		# fields = ['title', 'slug', 'description', 'content', 'tags']
+		fields = ['title', 'slug', 'description', 'content']
+		success_url = reverse_lazy('blog:index')
+	
+5-4. 
+
+    # Example: /blog/99/delete/
+    path('<int:pk>/delete/',
+         views.PostDeleteView.as_view(), name="delete",
+    ),
+	
+	class PostDeleteView(OwnerOnlyMixin, DeleteView) :
+		model = Post
+		success_url = reverse_lazy('blog:index')
