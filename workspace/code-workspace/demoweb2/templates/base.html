@@ -50,20 +50,22 @@
         <!-- account box -->
         <ul class="navbar-nav ml-5 mr-5">
             <li class="nav-item dropdown mx-1 btn btn-primary">
-                <!--
+                {# 로그인 여부 및 로그인한 사용자의 정보는 user 객체를 통해서 확인할 수 있습니다. #}
+                {% if user.is_active %}
                 <a class="nav-link dropdown-toggle text-white" href="#" data-toggle="dropdown">
-            	    <i class="fas fa-user"></i>&ensp;&ensp;</a>
+            	    <i class="fas fa-user"></i>&ensp;&ensp;{{ user.get_username }}</a>
                 <div class="dropdown-menu">
-            	    <a class="dropdown-item" href="">Logout</a>
+            	    <a class="dropdown-item" href="/accounts/logout/">Logout</a>
             	    <a class="dropdown-item" href="">Change Password</a>
                 </div>
-                -->
+                {% else %}
                 <a class="nav-link dropdown-toggle text-white" href="#" data-toggle="dropdown">
             	    <i class="fas fa-user"></i>&ensp;Anonymous&ensp;</a>
                 <div class="dropdown-menu">
             	    <a class="dropdown-item" href="/accounts/login/">Login</a>
-            	    <a class="dropdown-item" href="">Register</a>
+            	    <a class="dropdown-item" href="{% url 'register' %}">Register</a>
                 </div>
+                {% endif %}
                 
             </li>
         </ul>

@@ -17,13 +17,16 @@ from django.contrib import admin
 from django.http.response import HttpResponse
 from django.urls import path, include
 
-from demoweb.views import HomeView
+from demoweb.views import HomeView, UserCreateView, UserCreateDoneView
 
 urlpatterns = [
     path('', HomeView.as_view(), name='home'),
     path('admin/', admin.site.urls),
 
     path('accounts/', include('django.contrib.auth.urls')), # accounts/login
+    path('accounts/register/', UserCreateView.as_view(), name="register"),
+    path('accounts/register/done/', UserCreateDoneView.as_view(), name="register_done"),
+
 
     # path('bookmark/', None, name="bookmark-index"),
     path('bookmark/', include('bookmark.urls')),    # bookmark 로 시작되는 url 설정 관리는 bookmark/urls.py 에서 처리합니다.
