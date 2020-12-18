@@ -2,6 +2,10 @@ from django.db import models
 
 from django.urls import reverse
 
+from django.contrib.auth.models import User
+
+from django.utils.text import slugify
+
 # Create your models here.
 
 class Post(models.Model):
@@ -12,6 +16,7 @@ class Post(models.Model):
     content = models.TextField(verbose_name="CONTENT")
     create_dt = models.DateTimeField(verbose_name="CREATE DATE", auto_now_add=True)
     modify_dt = models.DateTimeField(verbose_name="MODIFY DATE", auto_now=True)
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True, verbose_name="OWNER")
 
     # ORM 객체 (테이블) 관리와 관련된 부가 정보 등록
     class Meta:
@@ -31,5 +36,10 @@ class Post(models.Model):
 
     def get_next(self): # 다음 글 가져오기
         return self.get_next_by_modify_dt()
+
+    # 상속 받은 메서드 재정의
+    def save(self, *args, **kwargs):
+        self.slug = slugify(self.title, allow_unicode=True)
+        super().save(*args, **kwargs)
     
 
