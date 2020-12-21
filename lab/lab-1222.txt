@@ -95,6 +95,16 @@ class HomeView(TemplateView):
 17. stocks/templates 폴더 및 stocks/templates/stocks 폴더 만들기
 
     - stocks/templates/stocks/home.html 수정
+	
+18. 화면 수정
+
+    home.html 파일에 summary.html.text 내용 적용
+	
+19. /stocks/market 요청 처리 구현
+
+    stocks/urls.py 구현
+	stocks/views.py 구현
+	home.html 자바스크립트 코드 구현 
 
 
 
