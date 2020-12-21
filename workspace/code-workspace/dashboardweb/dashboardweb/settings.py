@@ -74,10 +74,15 @@ WSGI_APPLICATION = 'dashboardweb.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
+# dbms client 도구로 mysqlclient 모듈 사용 (설치 필요)
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'HOST': 'localhost',
+        'PORT': 3306,
+        'NAME': "dashboarddb",
+        'USER': 'root',
+        'PASSWORD': 'Pa$$w0rd'
     }
 }
 
