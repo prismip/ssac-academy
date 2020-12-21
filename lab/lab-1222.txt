@@ -65,4 +65,40 @@
 
     - common_css.html, common_js.html, copyright.html 템플릿 파일 구현
     - base.html 템플릿 파일 구현 (구현 파일 참고)
-    - home.html 템펄릿 파일 수정 (구현 파일 참고)   
+    - home.html 템펄릿 파일 수정 (구현 파일 참고)
+
+12. 애플리케이션 생성
+
+    python manage.py startapp stocks
+
+13. 애플리케이션 등록 
+
+   - settings.py의 APPS 영역 수정
+
+     'stocks.apps.StocksConfig', 추가   
+
+14. dashboardweb/urls.py
+
+    - path('stocks/', include('stocks.urls'))
+
+15. stocks/urls.py 생성 및 수정
+
+urlpatterns = [
+    path('', HomeView.as_view(), name="home")
+]	
+
+16. stocks/views.py 수정
+
+class HomeView(TemplateView):
+    template_name = "stocks/home.html"
+	
+17. stocks/templates 폴더 및 stocks/templates/stocks 폴더 만들기
+
+    - stocks/templates/stocks/home.html 수정
+
+
+
+
+
+
+
