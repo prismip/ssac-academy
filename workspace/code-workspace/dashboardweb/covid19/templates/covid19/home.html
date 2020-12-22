@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block page_title %}
+    <!-- Title Page-->
+    <title>Stocks Home</title>
+{% endblock page_title %}
+
+{% block main_content %}
+                        <div class="row">
+                            <div class="col-md-12">
+                                <!-- DATA TABLE-->
+                                <div class="table-responsive m-b-40">
+                                    <table class="table table-borderless table-data3" id="confirmed_table">
+                                        <thead>
+                                            <tr>
+                                                <th>시도</th>
+                                                <th>확진</th>
+                                                <th>증감</th>
+                                                <th>사망</th>
+                                                <th>격리해제</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <!-- END DATA TABLE-->
+                            </div>
+                        </div>
+
+                        {% include 'common_copyright.html' %}
+{% endblock main_content %}
+
+{% block custom_js %}
+{% endblock %}

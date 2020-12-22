@@ -22,5 +22,6 @@ urlpatterns = [
     path('', HomeView.as_view(), name="home"),
     path('admin/', admin.site.urls),
 
-    path('stocks/', include('stocks.urls'))
+    path('stocks/', include('stocks.urls')),
+    path('covid19/', include('covid19.urls')),
 ]

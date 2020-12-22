@@ -40,7 +40,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     # custom-apps
-    'stocks.apps.StocksConfig'
+    'stocks.apps.StocksConfig',
+    'covid19.apps.Covid19Config',
 ]
 
 MIDDLEWARE = [
