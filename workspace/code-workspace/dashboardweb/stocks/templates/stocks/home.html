@@ -234,10 +234,7 @@ $(function() { // jQuery의 시작점 (브라우저가 html을 모두 읽었을 
                 for (var idx = 0; idx < detail_td_names.length; idx++) {
                     var tr = $(detail_tr_html_str);
                     tds = tr.find('td');
-                    $(tds[0]).text(detail_td_names[idx])
-                             .on('click', function(event) {
-                                 show_chart(data);
-                             });
+                    $(tds[0]).text(detail_td_names[idx]);
                     if (detail_td_names[idx] === 'homepage') {
                         link = $('<a>' + data[0][detail_td_names[idx]] +'</a>');
                         link.attr('href', data[0][detail_td_names[idx]])
@@ -247,14 +244,7 @@ $(function() { // jQuery의 시작점 (브라우저가 html을 모두 읽었을 
                     }
                     $('#stock_detail_table').append(tr);
 
-                    // var labels = []
-                    // var close_list = []
-                    // var amount_list = []
-                    // for (var i = 0; i < data[0].stats.length; i++) {
-                    //     labels.push(data[0].stats[i][0]);
-                    //     close_list.push(data[0].stats[i][4] * 100);
-                    //     amount_list.push(data[0].stats[i][5])
-                    // }
+                    show_chart(data);
                 }
                 
             },
@@ -263,6 +253,86 @@ $(function() { // jQuery의 시작점 (브라우저가 html을 모두 읽었을 
             }
         })
     });
+
+    function show_chart(data) {
+        var labels = []
+        var close_list = []
+        var amount_list = []
+        for (var i = 0; i < data[0].stats.length; i++) {
+            labels.push(data[0].stats[i][0]);   // 날짜 목록
+            close_list.push(data[0].stats[i][1]); // 종가 데이터 목록
+            amount_list.push(data[0].stats[i][5]);      // 거래량 데이터 목록
+        }
+
+        show_stock_line_chart(labels, [close_list]);
+        show_stock_bar_chart(labels, [amount_list]);
+    }
+
+    var line_chart = null;
+    function show_stock_line_chart(labels, datasets) {
+        //line chart
+        var ctx = $('#stock_line_chart'); // 그래프가 표시될 HTML 요소
+        if (ctx) {
+            ctx.height = 150;
+
+            if (line_chart) {
+                line_chart.destroy();
+            }
+            
+            line_chart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                labels: labels, // x축 데이터
+                defaultFontFamily: "Poppins",
+                datasets: [
+                    {
+                        label: "Close By Day",
+                        borderColor: "rgba(0,0,0,.09)",
+                        borderWidth: "1",
+                        backgroundColor: "rgba(0,0,0,.07)",
+                        data: datasets[0] // y축 데이터
+                    }
+                ]
+                },
+                options: {
+                legend: {
+                    position: 'top',
+                    labels: {
+                    fontFamily: 'Poppins'
+                    }
+                },
+                responsive: true,
+                tooltips: {
+                    mode: 'index',
+                    intersect: false
+                },
+                hover: {
+                    mode: 'nearest',
+                    intersect: true
+                },
+                scales: {
+                    xAxes: [{
+                    ticks: {
+                        fontFamily: "Poppins"
+
+                    }
+                    }],
+                    yAxes: [{
+                    ticks: {
+                        beginAtZero: true,
+                        fontFamily: "Poppins"
+                    }
+                    }]
+                }
+
+                }
+            });
+        }
+
+    }
+    function show_stock_bar_chart(labels, datasets) {
+    
+    }
 
 });
 </script>
