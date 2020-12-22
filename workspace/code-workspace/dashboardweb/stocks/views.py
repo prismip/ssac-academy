@@ -39,3 +39,20 @@ class SearchView(View):
         serialized_stocks = serializers.serialize('json', searched_stocks) # serialize : instance -> json string
         return JsonResponse(serialized_stocks, safe=False, json_dumps_params={'ensure_ascii':False})
 
+class StocksDetailView(View):
+    def get(self, request, pk):
+
+        import FinanceDataReader as fdr
+        import json
+
+        # stock = StockMaster.objects.get(symbol=pk)
+        stocks = StockMaster.objects.filter(symbol=pk)
+        stocks = list(stocks.values()) # django의 모델 인스턴스 컬렉션을 일반 리스트로 변경
+        # print(stocks)
+        # for stock in stocks:
+        #     stock_info = fdr.DataReader(pk, '20201201').fillna('').reset_index()
+        #     stock_info["Date"] = stock_info['Date'].astype('string')
+        #     stock['stats'] = stock_info.values.tolist()
+        serialized_stocks = json.dumps(stocks, ensure_ascii=False) #
+        return HttpResponse(serialized_stocks, content_type="application/json")
+
