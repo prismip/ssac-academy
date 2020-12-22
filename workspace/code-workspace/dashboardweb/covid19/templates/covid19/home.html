@@ -31,4 +31,41 @@
 {% endblock main_content %}
 
 {% block custom_js %}
+<script type="text/javascript">
+$(function() {
+
+    var columns = ['gubun', 'defCnt', 'incDec', 'deathCnt', 'isolClearCnt'];
+
+    $.ajax({
+        "url" :"/covid19/confirmed/",
+        "method": "get",
+        "dataType": "json", // 응답컨텐츠의 형식
+        "success": function(data, status, xhr) {
+
+            $('#confirmed_table tbody').empty()
+            
+            for (var i = 0; i < data.length; i++) { // 시도별 데이터를 반복하면서
+                var tr = $('<tr></tr>'); //tr 태그 객체 만들기
+                for (var j = 0; j < columns.length; j++) {
+                    var td = $('<td></td>'); //td 태그 객체 만들기
+                    column = columns[j];
+                    if (column == 'incDec') {
+                        if (parseInt(data[i][column]) > 0) {
+                            td.addClass('denied');
+                        } else {
+                            td.addClass('process');
+                        }
+                    }
+                    td.text(data[i][column]);
+                    tr.append(td);
+                }
+                $('#confirmed_table tbody').append(tr)
+            }
+        },
+        "error": function(xhr, status, err) {
+
+        }
+    });
+});
+</script>
 {% endblock %}
