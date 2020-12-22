@@ -50,7 +50,7 @@ class StocksDetailView(View):
         stocks = list(stocks.values()) # django의 모델 인스턴스 컬렉션을 일반 리스트로 변경
         # print(stocks)
         for stock in stocks:
-            stock_info = fdr.DataReader(pk, '20201201').fillna('').reset_index()
+            stock_info = fdr.DataReader(pk, '20200101').fillna('').reset_index()
             stock_info["Date"] = stock_info['Date'].astype('string')
             stock['stats'] = stock_info.values.tolist()
         serialized_stocks = json.dumps(stocks, ensure_ascii=False) #

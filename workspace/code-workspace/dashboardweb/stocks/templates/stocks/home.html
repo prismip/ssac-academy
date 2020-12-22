@@ -133,6 +133,27 @@
                             </div>
                         </div>
 
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="au-card m-b-30">
+                                    <div class="au-card-inner">
+                                        <h3 class="title-2 m-b-40">Line Chart By Day</h3>
+                                        <canvas id="stock_line_chart"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="au-card m-b-30">
+                                    <div class="au-card-inner">
+                                        <h3 class="title-2 m-b-40">Bar chart By Day</h3>
+                                        <canvas id="stock_bar_chart"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
 {% endblock main_content %}
 
 {% block custom_js %}
@@ -283,15 +304,108 @@ $(function() { // jQuery의 시작점 (브라우저가 html을 모두 읽었을 
                 type: 'line',
                 data: {
                 labels: labels, // x축 데이터
-                defaultFontFamily: "Poppins",
+                type: 'line',
+                defaultFontFamily: 'Poppins',
+                datasets: [{
+                    label: "Close By Day",
+                    data: datasets[0], // y축 데이터
+                    backgroundColor: 'transparent',
+                    borderColor: 'rgba(220,53,69,0.75)',
+                    borderWidth: 3,
+                    pointStyle: 'circle',
+                    pointRadius: 5,
+                    pointBorderColor: 'transparent',
+                    pointBackgroundColor: 'rgba(220,53,69,0.75)',
+                }]
+                },
+                options: {
+                responsive: true,
+                tooltips: {
+                    mode: 'index',
+                    titleFontSize: 12,
+                    titleFontColor: '#000',
+                    bodyFontColor: '#000',
+                    backgroundColor: '#fff',
+                    titleFontFamily: 'Poppins',
+                    bodyFontFamily: 'Poppins',
+                    cornerRadius: 3,
+                    intersect: false,
+                },
+                legend: {
+                    display: false,
+                    labels: {
+                    usePointStyle: true,
+                    fontFamily: 'Poppins',
+                    },
+                },
+                scales: {
+                    xAxes: [{
+                    display: true,
+                    gridLines: {
+                        display: false,
+                        drawBorder: false
+                    },
+                    scaleLabel: {
+                        display: false,
+                        labelString: 'Month'
+                    },
+                    ticks: {
+                        fontFamily: "Poppins"
+                    }
+                    }],
+                    yAxes: [{
+                    display: true,
+                    gridLines: {
+                        display: false,
+                        drawBorder: false
+                    },
+                    scaleLabel: {
+                        display: true,
+                        labelString: 'Value',
+                        fontFamily: "Poppins"
+
+                    },
+                    ticks: {
+                        fontFamily: "Poppins",
+                        min: 0,
+                    }
+                    }]
+                },
+                title: {
+                    display: false,
+                    text: 'Normal Legend'
+                }
+                }
+            });
+        }
+
+    }
+    
+    var bar_chart = null;
+    function show_stock_bar_chart(labels, datasets) {
+        //bar chart
+        var ctx = $('#stock_bar_chart');
+        if (ctx) {
+            ctx.height = 200;
+
+            if (bar_chart) {
+                bar_chart.destroy();
+            }
+
+            bar_chart = new Chart(ctx, {
+                type: 'bar',
+                defaultFontFamily: 'Poppins',
+                data: {
+                labels: labels, // x축 데이터
                 datasets: [
                     {
-                        label: "Close By Day",
-                        borderColor: "rgba(0,0,0,.09)",
-                        borderWidth: "1",
-                        backgroundColor: "rgba(0,0,0,.07)",
-                        data: datasets[0] // y축 데이터
-                    }
+                    label: "Amount By Day",
+                    data: datasets[0], // y축 데이터
+                    borderColor: "rgba(0, 123, 255, 0.9)",
+                    borderWidth: "0",
+                    backgroundColor: "rgba(0, 123, 255, 0.5)",
+                    fontFamily: "Poppins"
+                    },
                 ]
                 },
                 options: {
@@ -300,15 +414,7 @@ $(function() { // jQuery의 시작점 (브라우저가 html을 모두 읽었을 
                     labels: {
                     fontFamily: 'Poppins'
                     }
-                },
-                responsive: true,
-                tooltips: {
-                    mode: 'index',
-                    intersect: false
-                },
-                hover: {
-                    mode: 'nearest',
-                    intersect: true
+
                 },
                 scales: {
                     xAxes: [{
@@ -324,14 +430,9 @@ $(function() { // jQuery의 시작점 (브라우저가 html을 모두 읽었을 
                     }
                     }]
                 }
-
                 }
             });
         }
-
-    }
-    function show_stock_bar_chart(labels, datasets) {
-    
     }
 
 });
