@@ -81,6 +81,58 @@
                             </div>
                         </div>
 
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="card border border-secondary">
+                                    
+                                    <div class="card-body">
+                                        <form class="form-header" action="" method="POST">
+                                            <input class="au-input au-input--xl" type="text" id="company_name" placeholder="Input Company Name..." />
+                                            <button class="au-btn--submit" type="button" id="btn_search">
+                                                <i class="zmdi zmdi-search"></i>
+                                            </button>
+                                        </form>
+                                        <br>
+                                        <div class="table-responsive m-b-30">
+                                            <table id="stocks_table" class="table table-borderless table-striped table-earning">
+                                                <thead>
+                                                    <tr>
+                                                        <th>SYMBOL</th>
+                                                        <th>MARKET</th>
+                                                        <th>NAME</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card border border-secondary" id="company_card">
+                                    <div class="card-header">
+                                        <strong class="card-title" id="company_card_title">Company Name</strong>
+                                    </div>
+                                    <div class="card-body">
+                                        
+                                            <div class="top-campaign-x">
+                                                <h3 class="title-3 m-b-30">Basic Information</h3>
+                                                <div class="table-responsive">
+                                                    <table class="table table-top-campaign" id="stock_detail_table">
+                                                        <tbody>
+                                                            
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
 {% endblock main_content %}
 
 {% block custom_js %}
@@ -94,20 +146,22 @@ $(function() { // jQuery의 시작점 (브라우저가 html을 모두 읽었을 
     // location.href = '/stocks/market/'; // location.href -> 브라우저의 주소 입력창에 주소 입력 후 엔터
     
     //2. 비동기 방식 요청 + Partial refresh
-    $.ajax({   // jQuery의 ajax 요청 함수
-        "url": '/stocks/market',
-        "method": 'GET',
-        "success": function(data, status, xhr) { // "success" -> ajax 요청이 성공적으로 응답을 수신했을 때 호출되는 함수
-            // alert(data);
-            //$('#kospi').text(data);
-            values = data.split(',')
-            $('#kospi').text(values[0]);
-            $('#kosdaq').text(values[1]);
-        },
-        "error": function(xhr, status, err) {  // "error" -> ajax 요청에 오류가 있을 때 호출되는 함수
-            alert(err);
-        }
-    });
+    // $.ajax({   // jQuery의 ajax 요청 함수
+    //     "url": '/stocks/market',
+    //     "method": 'GET',
+    //     "success": function(data, status, xhr) { // "success" -> ajax 요청이 성공적으로 응답을 수신했을 때 호출되는 함수
+    //         // alert(data);
+    //         //$('#kospi').text(data);
+    //         values = data.split(',')
+    //         $('#kospi').text(values[0]);
+    //         $('#kosdaq').text(values[1]);
+    //         $('#dowjones').text(values[2]);
+    //         $('#nasdaq').text(values[3]);
+    //     },
+    //     "error": function(xhr, status, err) {  // "error" -> ajax 요청에 오류가 있을 때 호출되는 함수
+    //         alert(err);
+    //     }
+    // });
 
 });
 </script>

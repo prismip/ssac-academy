@@ -19,6 +19,12 @@ class MarketInfoView(View):
         kosdaq = fdr.DataReader("KQ11", '20201221')
         close_value2 = str(kosdaq.values[0][0])
 
-        return HttpResponse("{0},{1}".format(close_value1, close_value2), 
+        dowjones = fdr.DataReader("DJI", '20201221')
+        close_value3 = str(dowjones.values[0][0])
+
+        nasdaq = fdr.DataReader("IXIC", '20201221')
+        close_value4 = str(nasdaq.values[0][0])
+
+        return HttpResponse("{0},{1},{2},{3}".format(close_value1, close_value2, close_value3, close_value4), 
                             content_type="text/plain;charset=utf-8") # HTML을 응답하는 객체 반환
         
