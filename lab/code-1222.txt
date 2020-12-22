@@ -1,0 +1,74 @@
+list_td_names = ['symbol', 'market', 'name'];
+    list_tr_html_str = `<tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>`; 
+
+for (var idx = 0; idx < data.length; idx++) { 
+                    var tr = $(list_tr_html_str);
+                    tr.attr('data-symbol', data[idx].pk)
+                    var tds = tr.find('td');
+                    tds.each(function(i, td) {
+                        if (i == 0) {
+                            $(td).text(data[idx].pk)
+                        } else {
+                            $(td).text(data[idx].fields[list_td_names[i]])
+                        }
+                    });
+                    $('#stocks_table tbody').append(tr);
+
+                }
+
+
+=======================================
+
+    detail_td_names = ['symbol', 'market', 'name', 'sector', 'industry', 'listing_date', 'settle_month', 'representative', 'homepage', 'region'];
+    detail_tr_html_str = `<tr>
+                            <td></td>
+                            <td></td>
+                          </tr>`
+
+    $('#stocks_table').on('click', 'tr', function(event) {
+        event.preventDefault();
+        event.stopPropagation();
+
+        var symbol = $(this).attr('data-symbol');
+        // alert(symbol);
+
+        $.ajax({
+            "url": "/stocks/" + symbol,
+            "method": "GET",
+            "success": function(data, status, xhr) {
+                // alert(data);
+                $('#company_card_title').text(data[0].name);
+                $('#stock_detail_table').empty();
+                for (var idx = 0; idx < detail_td_names.length; idx++) {
+                    var tr = $(detail_tr_html_str);
+                    tds = tr.find('td');
+                    $(tds[0]).text(detail_td_names[idx]);
+                    if (detail_td_names[idx] === 'homepage') {
+                        link = $('<a>' + data[0][detail_td_names[idx]] +'</a>');
+                        link.attr('href', data[0][detail_td_names[idx]])
+                        $(tds[1]).append(link);
+                    } else {
+                        $(tds[1]).text(data[0][detail_td_names[idx]]);
+                    }
+                    $('#stock_detail_table').append(tr);
+
+                    var labels = []
+                    var close_list = []
+                    var amount_list = []
+                    for (var i = 0; i < data[0].stats.length; i++) {
+                        labels.push(data[0].stats[i][0]);
+                        close_list.push(data[0].stats[i][4] * 100);
+                        amount_list.push(data[0].stats[i][5])
+                    }
+                }
+                
+            },
+            "error": function(xhr, status, err) {
+                alert(err);
+            }
+        })
+    });
