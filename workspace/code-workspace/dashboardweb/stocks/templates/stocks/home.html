@@ -183,6 +183,108 @@ $(function() { // jQuery의 시작점 (브라우저가 html을 모두 읽었을 
     //         alert(err);
     //     }
     // });
+
+    $.ajax({
+        "url": "/stocks/market/",
+        "method": "GET",
+        "dataType": "json",
+        "success": function(data, status, xhr) {
+            $.each(['kospi', 'kosdaq', 'dowjones', 'nasdaq'], function(idx, market) {
+                show_widget_chart(market, data);
+            });            
+        },
+        "error": function(xhr, status, err) {
+
+        }
+    });
+
+    var widget_charts = { 'kospi': null, 'kosdaq': null, 'dowjones': null, 'nasdaq': null };
+    function show_widget_chart(market, datasets) {
+
+        var market_data = datasets[market];
+        var value = market_data[market_data.length - 1][4]; // 마지막 날의 가격 읽기
+        var labels = [];
+        var dataset = [];
+        for (var i = 0; i < market_data.length; i++) {
+            labels.push(market_data[i][0]); // 년도 데이터 추출해서 배열에 저장
+            dataset.push(market_data[i][4]); // 가격 데이터 추출해서 배열에 저장
+        }
+
+        $('#' + market).text(value); // 마지막 날의 가격 표시 
+
+        var ctx = $('#' + market + '-chart')
+        ctx.height = 130;
+
+        if (widget_charts[market]) {
+            widget_charts[market].destroy();
+        }
+        widget_charts[market] = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                type: 'line',
+                datasets: [{
+                    data: dataset,
+                    label: market,
+                    backgroundColor: 'transparent',
+                    borderColor: 'rgba(255,255,255,.55)',
+                },]
+            },
+            options: {
+
+                maintainAspectRatio: false,
+                legend: {
+                    display: false
+                },
+                responsive: true,
+                tooltips: {
+                    mode: 'index',
+                    titleFontSize: 12,
+                    titleFontColor: '#000',
+                    bodyFontColor: '#000',
+                    backgroundColor: '#fff',
+                    titleFontFamily: 'Montserrat',
+                    bodyFontFamily: 'Montserrat',
+                    cornerRadius: 3,
+                    intersect: false,
+                },
+                scales: {
+                    xAxes: [{
+                    gridLines: {
+                        color: 'transparent',
+                        zeroLineColor: 'transparent'
+                    },
+                    ticks: {
+                        fontSize: 2,
+                        fontColor: 'transparent'
+                    }
+                    }],
+                    yAxes: [{
+                    display: false,
+                    ticks: {
+                        display: false,
+                    }
+                    }]
+                },
+                title: {
+                    display: false,
+                },
+                elements: {
+                    line: {
+                        tension: 0.00001,
+                        borderWidth: 1
+                    },
+                        point: {
+                        radius: 4,
+                        hitRadius: 10,
+                        hoverRadius: 4
+                    }
+                }
+            }
+        });
+
+    }
+
     
     // 검색 버튼 클릭 처리
     list_td_names = ['symbol', 'market', 'name'];

@@ -17,21 +17,37 @@ class MarketInfoView(View):
     def get(self, request): # View에서 상속 받은 메서드 -> 재정의, 브라우저에서 get 요청을 보내면 호출되는 메서드
         # return HttpResponse("Hello, there !!!!!!!!", content_type="text/plain;charset=utf-8") # HTML을 응답하는 객체 반환
         import FinanceDataReader as fdr
+        from datetime import datetime, timedelta
+        import json
+
+        today = datetime.today() - timedelta(days=10)
+        today_str = today.strftime("%Y-%m-%d")
+
+        info = {}
+        df = fdr.DataReader('KS11', today_str)
+        df = df.tail(5).reset_index()
+        df['Date'] = df['Date'].astype('string')
+        info['kospi'] = [ list(row[:5]) for row in df.values ]
+
+        df = fdr.DataReader('KQ11', today_str)
+        df = df.tail(5).reset_index()
+        df['Date'] = df['Date'].astype('string')
+        info['kosdaq'] = [ list(row[:5]) for row in df.values ]
+
+        df = fdr.DataReader('DJI', today_str)
+        df = df.tail(5).reset_index()
+        df['Date'] = df['Date'].astype('string')
+        info['dowjones']  = [ list(row[:5]) for row in df.values ]
+
+        df = fdr.DataReader('IXIC', today_str)
+        df = df.tail(5).reset_index()
+        df['Date'] = df['Date'].astype('string')
+        info['nasdaq']  = [ list(row[:5]) for row in df.values ]
+
+        info_json = json.dumps(info, ensure_ascii=False)
+
+        return HttpResponse(info_json, content_type="application/json")
         
-        kospi = fdr.DataReader("KS11", '20201221')
-        close_value1 = str(kospi.values[0][0])
-
-        kosdaq = fdr.DataReader("KQ11", '20201221')
-        close_value2 = str(kosdaq.values[0][0])
-
-        dowjones = fdr.DataReader("DJI", '20201221')
-        close_value3 = str(dowjones.values[0][0])
-
-        nasdaq = fdr.DataReader("IXIC", '20201221')
-        close_value4 = str(nasdaq.values[0][0])
-
-        return HttpResponse("{0},{1},{2},{3}".format(close_value1, close_value2, close_value3, close_value4), 
-                            content_type="text/plain;charset=utf-8") # HTML을 응답하는 객체 반환
         
 class SearchView(View):
     def get(self, request, key):
