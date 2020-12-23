@@ -43,8 +43,13 @@ $(function() {
         "success": function(data, status, xhr) {
 
             $('#confirmed_table tbody').empty()
-            
+            var region_list = [];
             for (var i = 0; i < data.length; i++) { // 시도별 데이터를 반복하면서
+                if (region_list.indexOf(data[i]['gubun']) != -1) { // 이미 처리된 지역이라면
+                    continue;
+                }
+                region_list.push(data[i]['gubun']);
+
                 var tr = $('<tr></tr>'); //tr 태그 객체 만들기
                 for (var j = 0; j < columns.length; j++) {
                     var td = $('<td></td>'); //td 태그 객체 만들기
@@ -59,12 +64,30 @@ $(function() {
                     td.text(data[i][column]);
                     tr.append(td);
                 }
-                $('#confirmed_table tbody').append(tr)
+                tr.attr('data-region', data[i]['gubun']);    // <td data-region='서울'
+                $('#confirmed_table tbody').append(tr) // tr 태그 객체를 이미 html에 포함되어 있는 table에 추가
             }
         },
         "error": function(xhr, status, err) {
 
         }
+    });
+
+    // 확진자 정보 테이블의 행을 클릭하면 동작할 함수 지정
+    $('#confirmed_table tbody').on('click', 'tr', function(event) {
+
+        event.preventDefault();
+        event.stopPropagation();
+
+        var tr = $(this); // 이벤트를 발생시킨 객체
+        // alert( tr.attr('data-region') );
+
+        // 서버에 특정 지역(사용자각 클릭한 행의 지역)의 일정 기간 확진자 정보 조회 (비동기 방식)
+        // location.href = "/covid10/서울"
+        $.ajax({
+            "url": "/covid19/" + tr.attr('data-region')
+        })
+
     });
 });
 </script>
