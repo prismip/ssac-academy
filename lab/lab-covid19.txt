@@ -1,0 +1,40 @@
+1. 애플리케이션 생성
+
+    python manage.py startapp covid19
+
+2. 애플리케이션 등록 
+
+   - settings.py의 APPS 영역 수정
+
+     'covid19.apps.Covid19Config', 추가   
+
+3. dashboardweb/urls.py
+
+    - path('covid19/', include('covid19.urls'))
+
+4. covid19/urls.py 생성 및 수정
+
+	urlpatterns = [
+		path('', HomeView.as_view(), name="home")
+	]	
+
+5. covid19/views.py 수정
+
+	class HomeView(TemplateView):
+		template_name = "covid19/home.html"
+	
+6. covid19/templates 폴더 및 covid19/templates/covid19 폴더 만들기
+
+    - covid19/templates/covid19/home.html 수정
+	
+7. /covid19/confirmed 요청 처리 구현
+
+    covid19/urls.py 구현
+    covid19/views.py 구현
+    home.html 자바스크립트 코드 구현 
+
+8. /covid19/confirmed/<str:region> 요청 처리 구현
+
+    covid19/urls.py 구현
+    covid19/views.py 구현
+    home.html 자바스크립트 코드 구현 

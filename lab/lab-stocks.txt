@@ -1,0 +1,190 @@
+1. FinanceDataReader 모듈 설치
+
+   - 웹 크롤링을 대신 처리할 모듈
+
+   - pip install finance-datareader
+
+2. 웹 템플릿 다운로드
+
+   - https://github.com/puikinsh/CoolAdmin
+
+   - 다운로드 후 압축풀기
+
+   - html 파일 실행해서 확인
+
+3. 프로젝트 만들기
+
+   - django-admin startproject dashboardweb
+
+4. 설정 변경 
+
+   - settings.py
+
+     TIME_ZONE, STATICFILES_DIRS, TEMPLATES, DATABASE 항목 수정
+
+5. 데이터베이스 생성
+
+   - 터미널에서 mysql -u root -p  실행 후 패스워드 입력
+
+     create database dashboarddb;
+
+     grant all privileges on dashboard.* to ssac@localhost;
+     grant all privileges on dashboard.* to ssac@"%";
+     flush privileges;
+
+6. static 파일 복사
+
+   - vscode 프로젝트의 dashboardweb 폴더에 static 폴더 생성
+
+   - 다운로드한 웹템플릿 내용에서 css, fonts, images, js, media, vendor 폴더를 복사해서 프로젝트의 static 폴더에 붙여넣기
+
+7. 템플릿 파일 만들기
+
+   - vscode 프로젝트의 dashboardweb 폴더에서 templates 폴더 생성
+
+   - 다운로드한 웹템플릿 내용에서 index.html 파일을 home.html 파일로 변경해서 프로젝트의 templates 폴더에 붙여넣기
+
+   - css, js, image 등의 리소스 경로 수정
+
+     예 : "css/..." --> "/static/css/..."       
+
+8. dashboardweb/urls.py 파일 수정
+
+   path('', HomeView.as_view(), name="home"), 추가
+
+9. dashboardweb/views.py 파일 생성 및 수정
+
+   class HomeView(TemplateView):
+       template_name = 'home.html'
+
+10. 서버 실행 및 확인
+
+     - python manage.py runserver 0.0.0.0:8000
+
+11. 공통 템플릿 만들기 및 적용
+
+    - common_css.html, common_js.html, copyright.html 템플릿 파일 구현
+    - base.html 템플릿 파일 구현 (구현 파일 참고)
+    - home.html 템펄릿 파일 수정 (구현 파일 참고)
+
+12. 애플리케이션 생성
+
+    python manage.py startapp stocks
+
+13. 애플리케이션 등록 
+
+   - settings.py의 APPS 영역 수정
+
+     'stocks.apps.StocksConfig', 추가   
+
+14. dashboardweb/urls.py
+
+    - path('stocks/', include('stocks.urls'))
+
+15. stocks/urls.py 생성 및 수정
+
+	urlpatterns = [
+		path('', HomeView.as_view(), name="home")
+	]	
+
+16. stocks/views.py 수정
+
+	class HomeView(TemplateView):
+		template_name = "stocks/home.html"
+	
+17. stocks/templates 폴더 및 stocks/templates/stocks 폴더 만들기
+
+    - stocks/templates/stocks/home.html 수정
+	
+18. /stocks/market 요청 처리 구현
+
+    - 페이지 요청이 발생했을 때 4개 주식 시장 정보 표시
+
+    home.html 파일에 summary.html.text 내용 적용
+
+    stocks/urls.py 구현
+    stocks/views.py 구현
+    home.html 자바스크립트 코드 구현 
+
+19. 상장 기업 정보 조회, 파일 저장, 데이터베이스 저장
+
+   - 데이터베이스 생성 (터미널 또는 mysql-workbench 또는 heidi-sql 등에서 실행)
+
+    mysql -u root -p
+    패스워드 입력
+    create database dashboarddb;
+    grant all privileges on dashboarddb.* to ssac@localhost;
+    grant all privileges on dashboarddb.* to ssac@"%";
+    flush privileges;
+
+   - stocks/models.py StockMaster 모델 클래스 추가
+
+   - 모델 마이그레이션
+
+    python manage.py makemigrations stocks
+    python manage.py migrate
+
+   - 데이터베이스에서 생성 확인
+
+   - 데이터베이스에 데이터 삽입 (jupyter notebook에서) 
+
+	import FinanceDataReader as fdr
+	krx_data = fdr.StockListing("KRX")
+	krx_data.to_csv("stocks-master.csv", index=False)
+
+	------------
+
+	stocks_master = []
+	with open('stocks-master.csv', encoding="utf-8") as f:
+		reader = csv.reader(f)
+		header = next(reader)
+		for line in reader:
+			line[6] = re.sub(r'[^0-9]', '', line[6])
+			stocks_master.append(line)
+
+	---------------------------
+
+	import pymysql
+
+	connection_info = { 'host': 'localhost', 'user': 'root', 'password': 'Pa$$w0rd', 'db': 'dashboarddb', 'charset': 'utf8' }
+			
+	conn = pymysql.connect(**connection_info)
+	cursor = conn.cursor()
+
+	sql = 'DELETE FROM stocks_stockmaster'
+	cursor.execute(sql)
+
+	sql = 'INSERT INTO stocks_stockmaster VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)'
+	cursor.executemany(sql, stocks_master)
+
+	conn.commit()
+
+	conn.close()
+
+
+20. /stocks/search/<str:key> 요청 처리 구현 (검색)
+
+    - 검색 입력 창에 입력하고 검색 버튼을 클릭 했을 때 검색 결과 목록 표시
+
+    home.html 파일에 master-detail-table.html.txt 내용 적용
+    
+    stocks/urls.py 구현
+    stocks/views.py 구현
+    home.html 자바스크립트 코드 구현 
+
+21. /stocks/<str:pk> 요청 처리 구현 (상세보기)
+
+    - 검색 결과 목록에서 종목(한 행)을 클릭 했을 때 상세 내역과 그래프 표시
+
+    home.html 파일에 chart.html.txt 내용 적용
+
+    stocks/urls.py 구현
+    stocks/views.py 구현
+    home.html 자바스크립트 코드 구현 
+
+
+
+
+
+
+

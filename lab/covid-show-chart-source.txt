@@ -1,0 +1,270 @@
+-- Modal Dialog Html
+
+<div class="modal fade" id="confirmed_by_region" tabindex="-1" role="dialog" aria-labelledby="confirmed_by_region_title" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmed_by_region_title"></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" id="confirmed_by_region_content">
+                <div class="col-lg-12">
+                    <div class="au-card m-b-30">
+                        <div class="au-card-inner">
+                            <canvas id="confirmed_line_chart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Confirm</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+--------------------------------------------------------
+
+    var confirmed_line_chart = null;
+    function show_region_chart(region, data) {
+        
+        $('#confirmed_by_region_title').text(region);
+
+        var labels = [];
+        var dataset = [];
+        for (var i = data.length-1; i >= 0; i--) {
+            splited_day = data[i]['stdDay'].split(' ');
+            day = splited_day[0].substr(0, 4) + "-" + splited_day[1].substr(0, 2) + "-" + splited_day[2].substr(0, 2)
+            idx = labels.indexOf(day);
+            if (idx == -1) {
+                labels.push(day);
+               //dataset.push(data[i]['defCnt']);
+               dataset.push(parseInt(data[i]['incDec']));
+            } else {
+                //dataset[idx] = data[i]['defCnt'];
+                dataset[idx] = parseInt(data[i]['incDec']);
+            }
+        }
+
+        var ctx = $('#confirmed_line_chart');
+        ctx.height = 130;
+
+        if (confirmed_line_chart) {
+            confirmed_line_chart.destroy();
+        }
+        confirmed_line_chart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                type: 'line',
+                defaultFontFamily: 'Poppins',
+                datasets: [{
+                    label: region,
+                    data: dataset,
+                    backgroundColor: 'transparent',
+                    borderColor: 'rgba(220,53,69,0.75)',
+                    borderWidth: 3,
+                    pointStyle: '',
+                    pointRadius: 0,
+                    pointBorderColor: 'transparent',
+                    pointBackgroundColor: 'rgba(220,53,69,0.75)',
+                }]
+            },
+            options: {
+            responsive: true,
+            tooltips: {
+                mode: 'index',
+                titleFontSize: 12,
+                titleFontColor: '#000',
+                bodyFontColor: '#000',
+                backgroundColor: '#fff',
+                titleFontFamily: 'Poppins',
+                bodyFontFamily: 'Poppins',
+                cornerRadius: 3,
+                intersect: false,
+            },
+            legend: {
+                display: false,
+                labels: {
+                    usePointStyle: true,
+                    fontFamily: 'Poppins',
+                },
+            },
+            scales: {
+                xAxes: [{
+                    display: true,
+                    
+                    ticks: {
+                        fontFamily: "Poppins"
+                    }
+                }],
+                yAxes: [{
+                    display: true,
+                    gridLines: {
+                        display: false,
+                        drawBorder: false
+                    },
+                    scaleLabel: {
+                        display: true,
+                        labelString: 'Value',
+                        fontFamily: "Poppins"
+
+                    },
+                    ticks: {
+                        fontFamily: "Poppins",
+                        min: 0
+                    }
+                }]
+            },
+            title: {
+                display: false,
+                text: 'Normal Legend'
+            }
+            }
+        });
+
+        $('#confirmed_by_region').modal('show');
+    }
+
+--------------------------------------------------
+
+class MarketInfoView(View):
+    def get(self, request):
+        import FinanceDataReader as fdr
+        from datetime import datetime, timedelta
+        import json
+
+        today = datetime.today() - timedelta(days=10)
+        today_str = today.strftime("%Y-%m-%d")
+
+        info = {}
+        df = fdr.DataReader('KS11', today_str)
+        df = df.tail(5).reset_index()
+        df['Date'] = df['Date'].astype('string')
+        info['kospi'] = [ list(row[:5]) for row in df.values ]
+
+        df = fdr.DataReader('KQ11', today_str)
+        df = df.tail(5).reset_index()
+        df['Date'] = df['Date'].astype('string')
+        info['kosdaq'] = [ list(row[:5]) for row in df.values ]
+
+        df = fdr.DataReader('DJI', today_str)
+        df = df.tail(5).reset_index()
+        df['Date'] = df['Date'].astype('string')
+        info['dowjones']  = [ list(row[:5]) for row in df.values ]
+
+        df = fdr.DataReader('IXIC', today_str)
+        df = df.tail(5).reset_index()
+        df['Date'] = df['Date'].astype('string')
+        info['nasdaq']  = [ list(row[:5]) for row in df.values ]
+
+        info_json = json.dumps(info, ensure_ascii=False)
+
+        return HttpResponse(info_json, content_type="application/json")
+
+---------------------------------------------------
+
+$.ajax({
+        "url": "/stocks/market/",
+        "method": "GET",
+        "dataType": "json",
+        "success": function(data, status, xhr) {
+            $.each(['kospi', 'kosdaq', 'dowjones', 'nasdaq'], function(idx, market) {
+                show_widget_chart(market, data);
+            });            
+        },
+        "error": function(xhr, status, err) {
+
+        }
+    });
+
+---------------------------------------------------
+
+    var widget_charts = { 'kospi': null, 'kosdaq': null, 'dowjones': null, 'nasdaq': null };
+    function show_widget_chart(market, datasets) {
+
+        var market_data = datasets[market];
+        var value = market_data[market_data.length - 1][4];
+        var labels = [];
+        var dataset = [];
+        for (var i = 0; i < market_data.length; i++) {
+            labels.push(market_data[i][0]);
+            dataset.push(market_data[i][4]);
+        }
+
+        $('#' + market).text(value);
+
+        var ctx = $('#' + market + '-chart')
+        ctx.height = 130;
+
+        if (widget_charts[market]) {
+            widget_charts[market].destroy();
+        }
+        widget_charts[market] = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                type: 'line',
+                datasets: [{
+                    data: dataset,
+                    label: market,
+                    backgroundColor: 'transparent',
+                    borderColor: 'rgba(255,255,255,.55)',
+                },]
+            },
+            options: {
+
+                maintainAspectRatio: false,
+                legend: {
+                    display: false
+                },
+                responsive: true,
+                tooltips: {
+                    mode: 'index',
+                    titleFontSize: 12,
+                    titleFontColor: '#000',
+                    bodyFontColor: '#000',
+                    backgroundColor: '#fff',
+                    titleFontFamily: 'Montserrat',
+                    bodyFontFamily: 'Montserrat',
+                    cornerRadius: 3,
+                    intersect: false,
+                },
+                scales: {
+                    xAxes: [{
+                    gridLines: {
+                        color: 'transparent',
+                        zeroLineColor: 'transparent'
+                    },
+                    ticks: {
+                        fontSize: 2,
+                        fontColor: 'transparent'
+                    }
+                    }],
+                    yAxes: [{
+                    display: false,
+                    ticks: {
+                        display: false,
+                    }
+                    }]
+                },
+                title: {
+                    display: false,
+                },
+                elements: {
+                    line: {
+                        tension: 0.00001,
+                        borderWidth: 1
+                    },
+                        point: {
+                        radius: 4,
+                        hitRadius: 10,
+                        hoverRadius: 4
+                    }
+                }
+            }
+        });
+
+    }
