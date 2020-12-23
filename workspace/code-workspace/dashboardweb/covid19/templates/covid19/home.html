@@ -85,7 +85,15 @@ $(function() {
         // 서버에 특정 지역(사용자각 클릭한 행의 지역)의 일정 기간 확진자 정보 조회 (비동기 방식)
         // location.href = "/covid10/서울"
         $.ajax({
-            "url": "/covid19/" + tr.attr('data-region')
+            "url": "/covid19/confirmed/" + tr.attr('data-region'),
+            "method": "GET",
+            "dataType": "json",
+            "success": function(data, status, xhr) {
+                alert(data[0]['incDec']);
+            },
+            "error": function(xhr, status, err) {
+                alert(err);
+            }
         })
 
     });
