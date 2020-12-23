@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     # custom apps
     'bookmark.apps.BookmarkConfig',
     'blog.apps.BlogConfig',
+    'photo.apps.PhotoConfig',
 ]
 
 MIDDLEWARE = [
@@ -128,8 +129,9 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
-
 STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
 
-
 LOGIN_REDIRECT_URL = '/' # 로그인 성공했을 때 이동할 경로 -> default : /accounts/profile/
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')

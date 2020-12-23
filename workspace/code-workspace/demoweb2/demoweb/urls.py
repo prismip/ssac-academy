@@ -17,6 +17,9 @@ from django.contrib import admin
 from django.http.response import HttpResponse
 from django.urls import path, include
 
+from django.conf import settings
+from django.conf.urls.static import static 
+
 from demoweb.views import HomeView, UserCreateView, UserCreateDoneView
 
 urlpatterns = [
@@ -31,4 +34,6 @@ urlpatterns = [
     # path('bookmark/', None, name="bookmark-index"),
     path('bookmark/', include('bookmark.urls')),    # bookmark 로 시작되는 url 설정 관리는 bookmark/urls.py 에서 처리합니다.
     path('blog/', include('blog.urls')),            # blog 로 시작되는 url 설정 관리는 blog/urls.py 에서 처리합니다.
-]
+    path('photo/', include('photo.urls')),          # photo로 시작되는 url 설정 관리는 photo/urls.py에서 처리합니다.
+
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) # 이 요청과 경로에 대해서 static 처리 하는 설정 -> View를 거치지 않고 직접 다운로드하는 방식으로 처리
