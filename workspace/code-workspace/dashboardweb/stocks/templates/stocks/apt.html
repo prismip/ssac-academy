@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% block page_title %}
+    <title>Demo Home</title>
+{% endblock page_title %}
+
+{% block main_content %}
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="card border border-secondary">
+                                    
+                                    <div class="card-body">
+                                        <form class="form-header" action="." method="POST">
+                                            <input class="au-input au-input--xl" type="text" id="region" placeholder="시/도를 입력하세요" />
+                                            <button class="au-btn--submit" type="button" id="btn_search">
+                                                <i class="zmdi zmdi-search"></i>
+                                            </button>
+                                        </form>
+                                        <br>
+                                        <div class="table-responsive m-b-30">
+                                            <table id="apt_table" class="table table-borderless table-striped table-earning">
+                                                <thead>
+                                                    <tr>
+                                                        <th>주소</th>
+                                                        <th>아파트이름</th>
+														<th>최고가격</th>
+														<th>최저가격</th>
+                                                        <th>평균가격</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                        </div>
+                        {% include 'common_copyright.html' %}
+{% endblock main_content %}
+
+{% block modals %}
+
+{% endblock modals %}
+
+{% block custom_js %}
+<script type="text/javascript">
+
+</script>
+{% endblock custom_js %}
