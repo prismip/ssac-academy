@@ -72,3 +72,42 @@ class StocksDetailView(View):
         serialized_stocks = json.dumps(stocks, ensure_ascii=False) #
         return HttpResponse(serialized_stocks, content_type="application/json")
 
+
+
+###########################################################
+
+class AptHomeView(TemplateView):
+    template_name = 'stocks/apt.html'
+
+class AptInfoByRegion(View):
+    def get(self, request, region):
+        import csv 
+        import json
+
+        # 원본 데이터를 읽은 후
+        # 1. 계약년월을 계약년도, 계약월 컬럼으로 분할 
+        # 2. 면적(실수형), 계약년도(정수형), 계약월(정수형), 일(정수형), 가격(정수형), 층(정수형), 건축년도(정수형) 컬럼은 수치형으로 변경
+
+        apt_data = []
+        with open('stocks/apt_201910.csv', 'rt', encoding="utf-8") as f:
+            reader = csv.reader(f)
+            next(reader)
+
+            for line in reader:
+                apt_data.append(line[:5] + \
+                                [ float(line[5]) ] + \
+                                [ int(line[6][:4]), int(line[6][4:]) ] + \
+                                [ int(x.replace(",", ""))for x in line[7:11] ] +\
+                                line[-1:])
+
+        values = { 'min': apt_data[0], 'max': apt_data[0], 'total': 0, 'cnt': 0 }
+        for row in apt_data:
+            if row[0].startswith(region):
+                values['min'] = row if row[9] < values['min'][9] else values['min']
+                values['max'] = row if row[9] > values['max'][9] else values['max']
+                values['total'] += row[9]
+                values['cnt'] += 1
+        values['mean'] = values['total'] / values['cnt']
+        json_values = json.dumps(values, ensure_ascii=False)
+
+        return HttpResponse(json_values, content_type="application/json;charset=utf-8")
