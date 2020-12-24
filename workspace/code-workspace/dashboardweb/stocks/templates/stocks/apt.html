@@ -11,7 +11,7 @@
                                     
                                     <div class="card-body">
                                         <form class="form-header" action="." method="POST">
-                                            <input class="au-input au-input--xl" type="text" id="region" placeholder="시/도를 입력하세요" />
+                                            <input class="au-input" type="text" id="region" placeholder="시/도를 입력하세요" />
                                             <button class="au-btn--submit" type="button" id="btn_search">
                                                 <i class="zmdi zmdi-search"></i>
                                             </button>
@@ -37,7 +37,7 @@
                             </div>
                             
                         </div>
-                        {% include 'common_copyright.html' %}
+                        {% include 'copyright.html' %}
 {% endblock main_content %}
 
 {% block modals %}
@@ -46,6 +46,43 @@
 
 {% block custom_js %}
 <script type="text/javascript">
+$(function() {
+    $('#btn_search').on('click', function(event) {
 
+        var region = $('#region').val();
+        if (!region) {
+            return;
+        }
+
+        $('#apt_table tbody').empty();
+
+        $.ajax({
+            "url": "/stocks/apt/" + region,
+            "method": "GET",
+            "dataType": "json",
+            "success": function(data, status, xhr) {
+                //alert(data['min'][0] + " / " + data['min'][9]);
+                var tr = $('<tr></tr>');
+                $('<td></td>').text(data['min'][0]).appendTo(tr); // 주소
+                $('<td></td>').text(data['min'][4]).appendTo(tr); // 아파트이름
+                $('<td></td>').text('-').appendTo(tr); // 최고가격
+                $('<td></td>').text(data['min'][9]).appendTo(tr); // 최저가격
+                $('<td></td>').text(data['mean']).appendTo(tr); // 평균가격
+                $('#apt_table tbody').append(tr)
+
+                var tr = $('<tr></tr>');
+                $('<td></td>').text(data['max'][0]).appendTo(tr); // 주소
+                $('<td></td>').text(data['max'][4]).appendTo(tr); // 아파트이름
+                $('<td></td>').text(data['max'][9]).appendTo(tr); // 최고가격
+                $('<td></td>').text('-').appendTo(tr); // 최저가격
+                $('<td></td>').text(data['mean']).appendTo(tr); // 평균가격
+                $('#apt_table tbody').append(tr)
+            },
+            "error": function(xhr, status, err) {
+                alert(err);
+            }
+        });
+    });
+});
 </script>
 {% endblock custom_js %}
