@@ -1,0 +1,30 @@
+1. 다음과 같은 속성을 가진 NewCustomer 테이블을 생성하시오.
+
+   custid(고객번호) - INTEGER, 기본키
+   name(이름) – VARCHAR(40)
+   address(주소) – VARCHAR(40)
+   phone(전화번호) – VARCHAR(30)
+
+2. 다음과 같은 속성을 가진 NewOrders 테이블을 생성하시오.
+ 
+   orderid(주문번호) - INTEGER, 기본키
+   custid(고객번호) - INTEGER, NOT NULL 제약조건, 외래키(NewCustomer.custid, 연쇄삭제)
+   bookid(도서번호) - INTEGER, NOT NULL 제약조건
+   saleprice(판매가격) - INTEGER 
+   orderdate(판매일자) – DATE
+
+3. NewBook 테이블에 VARCHAR(13)의 자료형을 가진 isbn 속성을 추가하시오.
+
+4. NewBook 테이블의 isbn 속성의 데이터 타입을 INTEGER형으로 변경하시오.
+
+5. NewBook 테이블의 isbn 속성을 삭제하시오.
+
+6. NewBook 테이블의 bookid 속성에 NOT NULL 제약조건을 적용하시오.
+
+7. NewBook 테이블의 bookid 속성을 기본키로 변경하시오.
+
+8. NewBook 테이블을 삭제하시오
+
+9. NewCustomer 테이블을 삭제하시오. 
+   만약 삭제가 거절된다면 원인을 파악하고 관련된 테이블을 같이 삭제하시오(NewOrders 테이블이 NewCustomer를 참조하고 있음).
+ 

@@ -225,6 +225,63 @@ DESC employees;
 
 DROP TABLE compressedtbl, normaltbl;
 
+-- 10. 테이블 수정
+
+DROP TABLE IF EXISTS usertbl;
+CREATE TABLE usertbl
+(
+	userid char(8),
+    name varchar(10),
+    birthyear int,
+    addr char(2), -- 서울, 경기, 부산, 인천
+    mobile1 char(3),
+    mobile2 varchar(8),
+    height smallint,
+    mdate date
+);
+
+DROP TABLE IF EXISTS buytbl;
+CREATE TABLE buytbl
+(
+	num int PRIMARY KEY AUTO_INCREMENT,
+    userid char(8),
+    prodname char(6),
+    groupname char(4),
+    price int,
+    amount smallint
+);
+
+ALTER TABLE usertbl
+ADD CONSTRAINT pk_usertbl PRIMARY KEY (userid);
+
+DESC usertbl;
+
+ALTER TABLE buytbl
+	ADD CONSTRAINT fk_buytbl_to_usertbl 
+	FOREIGN KEY (userid) 
+	REFERENCES usertbl(userid);
+    
+DESC buytbl;
+
+ALTER TABLE usertbl
+	ADD CONSTRAINT ck_birthyear
+    CHECK (birthyear > 1900 AND birthyear < 2021);
+    
+ALTER TABLE usertbl
+	ADD homepage varchar(100) null default ('http://www.example.com');
+
+DESC usertbl;
+
+ALTER TABLE usertbl
+	DROP COLUMN homepage;
+    
+DESC usertbl;
+
+ALTER TABLE usertbl
+	CHANGE COLUMN name username varchar(30) not null;
+    
+DESC usertbl;
+
 
 
 
