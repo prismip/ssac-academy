@@ -13,18 +13,24 @@
    saleprice(판매가격) - INTEGER 
    orderdate(판매일자) – DATE
 
-3. NewBook 테이블에 VARCHAR(13)의 자료형을 가진 isbn 속성을 추가하시오.
+3. 다음과 같은 속성을 가진 NewBook 테이블을 생성하시오. 
+   bookid(도서번호)-INTEGER
+   bookname(도서이름)-VARCHAR(20)
+   publisher(출판사)-VARCHAR(20)
+   price(가격)-INTEGER
 
-4. NewBook 테이블의 isbn 속성의 데이터 타입을 INTEGER형으로 변경하시오.
+4. NewBook 테이블에 VARCHAR(13)의 자료형을 가진 isbn 속성을 추가하시오.
 
-5. NewBook 테이블의 isbn 속성을 삭제하시오.
+5. NewBook 테이블의 isbn 속성의 데이터 타입을 INTEGER형으로 변경하시오.
 
-6. NewBook 테이블의 bookid 속성에 NOT NULL 제약조건을 적용하시오.
+6. NewBook 테이블의 isbn 속성을 삭제하시오.
 
-7. NewBook 테이블의 bookid 속성을 기본키로 변경하시오.
+7. NewBook 테이블의 bookid 속성에 NOT NULL 제약조건을 적용하시오.
 
-8. NewBook 테이블을 삭제하시오
+8. NewBook 테이블의 bookid 속성을 기본키로 변경하시오.
 
-9. NewCustomer 테이블을 삭제하시오. 
+9. NewBook 테이블을 삭제하시오
+
+10. NewCustomer 테이블을 삭제하시오. 
    만약 삭제가 거절된다면 원인을 파악하고 관련된 테이블을 같이 삭제하시오(NewOrders 테이블이 NewCustomer를 참조하고 있음).
  
