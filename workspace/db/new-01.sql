@@ -221,6 +221,9 @@ DESC employees; -- 임시 테이블이 기존의 employees테이블을 가려서
 DROP TABLE employees;
 DESC employees;
 
+-- 9. 테이블 삭제
+
+DROP TABLE compressedtbl, normaltbl;
 
 
 
