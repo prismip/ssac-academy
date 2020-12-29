@@ -50,7 +50,8 @@ ADD isbn VARCHAR(13) NOT NULL UNIQUE;
 
 -- 5. NewBook 테이블의 isbn 속성의 데이터 타입을 INTEGER형으로 변경하시오.
 ALTER TABLE new_book
-MODIFY isbn INT NOT NULL UNIQUE;
+MODIFY isbn INT NOT NULL;
+desc new_book;
 
 -- 6. NewBook 테이블의 isbn 속성을 삭제하시오.
 ALTER TABLE new_book
@@ -72,6 +73,15 @@ DROP TABLE new_customer;
 DROP TABLE new_orders;
 DROP TABLE new_book;
 DROP TABLE new_customer;
+
+use employees;
+
+select * from employees limit 10;
+select * from salaries;
+
+select s.*, e.first_name, e.last_name 
+from employees e, salaries s
+where e.emp_no = s.emp_no;
 
 
 
