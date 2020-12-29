@@ -56,3 +56,6 @@ AS
 	INNER JOIN buytbl b
 	ON u.userid = b.userid;
     
+-- 4.
+show variables like 'innodb_file_per_table';
+    
