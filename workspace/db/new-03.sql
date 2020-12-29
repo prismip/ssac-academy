@@ -58,4 +58,30 @@ AS
     
 -- 4.
 show variables like 'innodb_file_per_table';
+
+-- 5. 
+USE employees;
+
+DROP VIEW v_employees_include_a;
+CREATE OR REPLACE VIEW v_employees_include_a
+AS
+	SELECT * 
+    FROM employees
+    WHERE first_name LIKE '%a%' OR last_name LIKE '%a%';
+    
+SELECT * FROM v_employees_include_a;
+
+-- 6
+
+CREATE OR REPLACE VIEW v_current_salary_info
+AS
+	SELECT concat(e.first_name, e.last_name) as name, s.*
+	FROM salaries s
+	INNER JOIN employees e
+	ON s.emp_no = e.emp_no
+	WHERE s.to_date = '9999-01-01';
+    
+SELECT * FROM v_current_salary_info;
+
+
     
