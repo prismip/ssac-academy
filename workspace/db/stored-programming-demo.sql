@@ -27,12 +27,12 @@ BEGIN
   END IF;
 END $$
 DELIMITER ;
+
 CALL ifProc();
 
 --------------------------------
 
 DROP PROCEDURE IF EXISTS ifProc2; 
-USE employees;
 
 DELIMITER $$
 CREATE PROCEDURE ifProc2()
@@ -55,6 +55,7 @@ BEGIN
 	END IF;
 END $$
 DELIMITER ;
+
 CALL ifProc2();
 
 -------------------------------------
@@ -81,6 +82,7 @@ BEGIN
     SELECT CONCAT('취득점수==>', point), CONCAT('학점==>', credit);
 END $$
 DELIMITER ;
+
 CALL ifProc3();
 
 ----------------------------------------------
@@ -113,17 +115,17 @@ CALL caseProc();
 ----------------------------------------------
 
 SELECT U.userID, U.name, SUM(price*amount) AS '총구매액',
-       CASE  
+	   CASE  
            WHEN (SUM(price*amount)  >= 1500) THEN '최우수고객'
            WHEN (SUM(price*amount)  >= 1000) THEN '우수고객'
            WHEN (SUM(price*amount) >= 1 ) THEN '일반고객'
            ELSE '유령고객'
-        END AS '고객등급'
-   FROM buytbl B
-      RIGHT OUTER JOIN usertbl U
-         ON B.userID = U.userID
-   GROUP BY U.userID, U.name 
-   ORDER BY sum(price*amount) DESC ;
+       END AS '고객등급'
+FROM buytbl B
+RIGHT OUTER JOIN usertbl U
+ON B.userID = U.userID
+GROUP BY U.userID, U.name 
+ORDER BY sum(price*amount) DESC ;
    
 --------------------------------------------------
 
@@ -144,6 +146,7 @@ BEGIN
 	SELECT hap;   
 END $$
 DELIMITER ;
+
 CALL whileProc();
 
 ----------------------------------------------------
@@ -170,14 +173,15 @@ BEGIN
         SET i = i + 1;
     END WHILE;
 
-    SELECT hap;   
+    SELECT hap, i;   
 END $$
 DELIMITER ;
+
 CALL whileProc2();
 
 ----------------------------------------------------
 
-error code reference link : https://dev.mysql.com/doc/mysql-errors/8.0/en/server-error-reference.html
+-- error code reference link : https://dev.mysql.com/doc/mysql-errors/8.0/en/server-error-reference.html
 
 ------------------------------------------------------
 
@@ -199,13 +203,15 @@ CREATE PROCEDURE errorProc2()
 BEGIN
     DECLARE CONTINUE HANDLER FOR SQLEXCEPTION 
     BEGIN
-	SELECT '오류가 발생했네요. 작업은 취소시켰습니다.' AS '메시지'; 
-	ROLLBACK; -- 오류 발생시 작업을 롤백시킨다.
+		SELECT '오류가 발생했네요. 작업은 취소시켰습니다.' AS '메시지'; 
+		ROLLBACK; -- 오류 발생시 작업을 롤백시킨다.
     END;
+    
     INSERT INTO usertbl VALUES('LSG', '이상구', 1988, '서울', NULL, 
 		NULL, 170, CURRENT_DATE()); -- 중복되는 아이디이므로 오류 발생
 END $$
 DELIMITER ;
+
 CALL errorProc2();
 
 ------------------------------------------------------------
@@ -224,6 +230,8 @@ PREPARE myQuery FROM 'INSERT INTO myTable VALUES(NULL, ?)';
 EXECUTE myQuery USING @curDATE;
 DEALLOCATE PREPARE myQuery;
 SELECT * FROM myTable;
+
+SELECT @curDate;
 
 -----------------------------------------------------------------
 
@@ -298,6 +306,9 @@ END $$
 DELIMITER ;
 
 CALL ifelseProc ('조용필');
+CALL ifelseProc('이승기');
+
+select * from usertbl;
 
 -----------------------------------------------
 
@@ -329,7 +340,7 @@ BEGIN
 END $$
 DELIMITER ;
 
-CALL caseProc ('김범수');
+CALL caseProc ('이승기');
 
 --------------------------------------------------------
 
@@ -434,6 +445,8 @@ CALL nameProc ('userTBL');
 
 -----------------------------------------------------------
 
+SELECT COUNT(*) FROM employees.employees;
+
 -- 3. Stored Function
 
 set global log_bin_trust_function_creators = 1;
@@ -466,7 +479,8 @@ BEGIN
 END $$
 DELIMITER ;
 
-SELECT getAgeFunc(1979);
+SELECT getAgeFunc(1981);
+SELECT getAgeFunc(1991);
 
 SELECT getAgeFunc(1979) INTO @age1979;
 SELECT getAgeFunc(1997) INTO @age1989;
@@ -543,6 +557,7 @@ BEGIN
         FOR NOT FOUND SET endOfRow = TRUE;
     
     OPEN userCuror;  -- 커서 열기
+    
     grade_loop: LOOP
         FETCH  userCuror INTO id, hap; -- 첫 행 값을 대입
         IF endOfRow THEN
@@ -576,6 +591,8 @@ CREATE TABLE IF NOT EXISTS testTbl (id INT, txt VARCHAR(10));
 INSERT INTO testTbl VALUES(1, '레드벨벳');
 INSERT INTO testTbl VALUES(2, '잇지');
 INSERT INTO testTbl VALUES(3, '블랙핑크');
+
+SELECT * FROM testTbl;
 
 DROP TRIGGER IF EXISTS testTrg;
 DELIMITER // 
@@ -641,6 +658,8 @@ BEGIN
 END // 
 DELIMITER ;
 
+SELECT * FROM usertbl;
+
 UPDATE userTbl SET addr = '몽고' WHERE userID = 'JKW';
 DELETE FROM userTbl WHERE height >= 177;
 
@@ -689,6 +708,7 @@ INSERT INTO userTbl VALUES
 INSERT INTO userTbl VALUES
   ('BBB', '비이', 2977, '경기', '011', '1113333', 171, '2019-3-25');
 
+select * from usertbl;
 
 SHOW TRIGGERS FROM sqlDB;
 
@@ -716,6 +736,10 @@ CREATE TABLE deliverTbl -- 배송 테이블
 INSERT INTO prodTbl VALUES('사과', 100);
 INSERT INTO prodTbl VALUES('배', 100);
 INSERT INTO prodTbl VALUES('귤', 100);
+
+select * from prodTbl;
+select * from orderTbl;
+select * from deliverTbl;
 
 -- 물품 테이블에서 개수를 감소시키는 트리거
 DROP TRIGGER IF EXISTS orderTrg;
@@ -747,10 +771,6 @@ END //
 DELIMITER ;
 
 INSERT INTO orderTbl VALUES (NULL,'JOHN', '배', 5);
-
-SELECT * FROM orderTbl;
-SELECT * FROM prodTbl;
-SELECT * FROM deliverTbl;
 
 SELECT * FROM orderTbl;
 SELECT * FROM prodTbl;
