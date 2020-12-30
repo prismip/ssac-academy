@@ -27,6 +27,7 @@ INSERT INTO FulltextTbl VALUES
 (NULL, '매트릭스',' 2199년.인공 두뇌를 가진 컴퓨터가 지배하는 세계.');
 
 
+SELECT * FROM fulltexttbl;
 SELECT * FROM FulltextTbl WHERE description LIKE '%남자%' ;
 
 CREATE FULLTEXT INDEX idx_description ON FulltextTbl(description);
@@ -53,6 +54,7 @@ DROP INDEX idx_description ON FulltextTbl;
 CREATE TABLE user_stopword (value VARCHAR(30));
 
 INSERT INTO user_stopword VALUES ('그는'), ('그리고'), ('극에');
+SELECT * FROM user_stopword;
 
 SET GLOBAL innodb_ft_server_stopword_table = 'fulltextdb/user_stopword'; -- 모두 소문자
 SHOW GLOBAL VARIABLES LIKE 'innodb_ft_server_stopword_table';
