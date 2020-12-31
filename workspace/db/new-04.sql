@@ -114,3 +114,58 @@ ORDER BY salary DESC;
 
 -- 12. 모든 사원들 성과 이름(Name으로 별칭), 입사일 그리고 입사일이 어떤 요일이였는지 출력하시오. 
 -- 	이때 주(week)의 시작인 일요일부터 출력되도록 정렬하시오
+SELECT 
+	employee_id, CONCAT(first_name, ' ', last_name) Name,
+    hire_date, DATE_FORMAT(hire_date, "%W") "Day of Week"
+FROM employees
+ORDER BY DATE_FORMAT(hire_date, "%w");
+
+-- 13. 모든 사원은 직속 상사 및 직속 직원을 갖는다. 단, 최상위 또는 최하위 직원은 직속 상사 및 직원이 없다. 
+-- 	소속된 사원들 중 어떤 사원의 상사로 근무 중인 사원의 총 수를 출력하시오
+
+SELECT COUNT(distinct manager_id) "Count of Manager"
+FROM employees
+WHERE manager_id IS NOT NULL;
+
+
+-- 14. 각 사원이 소속된 부서별로 급여 합계, 급여 평균, 급여 최대값, 급여 최소값을 집계하고자 한다. 
+-- 	계산된 출력값은 부서번호의 오름차순 정렬해서 $ 표시와 함께 출력하시오.  
+-- 	단, 부서에 소속되지 않은 사원에 대한 정보는 제외하시요
+
+SELECT 
+	department_id, 
+    concat('$', FORMAT(sum(salary), 0)) "총급여", -- Format : 천 단위, 표시 + 소수점 개수 
+    concat('$', FORMAT(avg(salary), 2)) "평균급여", 
+    concat('$', FORMAT(max(salary), 0)) "최대급여", 
+    concat('$', FORMAT(min(salary), 0)) "최소급여"
+FROM employees
+WHERE DEPARTMENT_ID IS NOT NULL
+GROUP BY department_id
+ORDER BY department_id;
+
+-- 15. 사원들의 업무별 전체 급여 평균이 $10,000보다 큰 경우를 조회하여 업무, 급여 평균을 출력하시오.
+-- 	단 업무에 사원(CLERK)이 포함된 경우는 제외하고 전체 급여 평균이 높은 순서대로 출력하시오
+SELECT job_id, avg(salary) "급여평균"
+FROM employees
+WHERE job_id NOT LIKE '%CLERK%' -- AND AVG(SALARY) > 10000 --> 오류 : GROUP BY의 집계함수를 WHERE절에서 사용할 수 없습니다.  
+GROUP BY job_id
+HAVING AVG(SALARY) > 10000
+ORDER BY AVG(salary) DESC;
+
+-- 16. HR 데이터베이스에 존재하는 Employees, Departments, Locations 테이블의 구조를 파악한 후
+-- 	Oxford에 근무하는 사원의 성과 이름(Name으로 별칭), 업무, 부서명, 도시명을 출력하시오. 
+-- 	이때 첫 번째 열은 회사명인 ‘SSAC’이라는 상수값이 출력되도록 하시오
+
+-- 17. HR 데이터베이스에 있는 Employees, Departments 테이블의 구조를 파악한 후 
+-- 	사원수가 5명 이상인 부서의 부서명과 사원수를 사원수가 많은 순으로 정렬해서 출력하시오.
+-- 	
+-- 18. 각 사원의 급여에 따른 급여 등급을 보고하려고 한다. 
+-- 	급여 등급은 JOB_GRADES 테이블에 표시된다. 
+-- 	해당 테이블의 구조를 살펴본 후 사원의 성과 이름(Name으로 별칭), 업무, 부서명, 입사일, 급여, 급여등급을 출력하시오
+
+-- 19. 각 사원과 직속 상사와의 관계를 이용하여 다음과 같은 형식의 보고서를 작성하고자 한다.
+
+-- 	예) 홍길동은 허균에게 보고한다 → Eleni Zlotkey report to Steven King
+
+-- 	어떤 사원이 어떤 사원에서 보고하는지를 위 예를 참고하여 출력하시오. 
+-- 	단, 보고할 상사가 없는 사원이 있다면 그 정보도 포함하여 출력하고, 상사의 이름은 대문자로 출력하시오
