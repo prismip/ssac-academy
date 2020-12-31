@@ -249,3 +249,75 @@ SELECT
     ( SELECT ROUND(AVG(e2.salary), 0) FROM employees e2 WHERE e2.department_id = e1.department_id ) "부서평균"
 FROM employees e1;
 
+-- 25. HR 데이터베이스에 있는 JOB_HISTORY 테이블은 사원들의 업무 변경 이력을 나타내는 테이블이다. 
+-- 	이 정보를 이용하여 모든 사원의 현재 및 이전의 업무 이력 정보를 출력하고자 한다. 
+-- 	중복된 사원정보가 있을 경우 한 번만 표시하여 출력하시오
+
+SELECT employee_id, job_id FROM employees
+UNION -- 중복을 허용하지않는 결과집합 결합
+SELECT employee_id, job_id FROM job_history 
+ORDER BY employee_id;
+
+-- 26. 위 샘플 문제에서 각 사원의 업무 이력 정보를 확인하였다. 하지만 모든 사원의 업무이력 전체를 보지는 못했다. 
+-- 	여기에서는 모든 사원의 업무 이력 변경 정보 및 업무 변경에 따른 부서정보를 사번이 빠른 순서대로 출력하시오
+SELECT employee_id, job_id, department_id FROM employees
+UNION ALL
+SELECT employee_id, job_id, department_id FROM job_history 
+ORDER BY employee_id;
+
+-- 27. 사원정보(Employees) 테이블의 JOB_ID는 사원의 현재 업무를 뜻하고, JOB_HISTORY의 JOB_ID는 사원의 이전 업무를 뜻한다. 
+-- 	이 두 테이블을 교차해보면 업무가 변경된 사원의 정보도 볼 수 있지만 이전에 한번 했던 같은 업무를 그대로 하고 있는 사원의 정보도 볼 수 있다. 
+-- 	이전에 한번 했던 같은 업무를 보고 있는 사원의 사번과 업무를 출력하시오
+SELECT e.employee_id, e.job_id
+FROM employees e, job_history j
+WHERE e.employee_id = j.employee_id AND e.job_id = j.job_id;
+
+-- 28. 위 결과를 이용하여 출력된 176번 사원의 업무 이력의 변경 날짜 이력을 조회하시오
+SELECT employee_id, job_id, NULL AS start_date, NULL AS end_date
+FROM employees
+WHERE employee_id = 176
+UNION 
+SELECT employee_id, job_id, start_date, end_date
+FROM job_history
+WHERE employee_id = 176;
+
+-- 29. 우리 회사는 1년에 한 번 업무를 변경하여 전체적인 회사 업무를 사원들이 익히도록 하는 Role change 정책을 시행하고 있다. 
+-- 	이번 인사이동 때 아직 업무가 변경된 적이 없는 사원들을 적합한 업무로 이동시키려고 한다. 
+-- 	HR 부서의 사원정보 테이블과 업무이력정보 테이블을 이용하여 한 번도 업무가 변경되지 않은 사원의 사번을 출력하시오
+SELECT * 
+FROM employees
+WHERE employee_id NOT IN ( SELECT employee_id FROM job_history );
+
+-- 30. HR 부서에서는 신규 프로젝트의 성공으로 해당하는 각 업무 자들에 대한 급여 인상안을 결정하고, 
+-- 	다음과 같이 업무 별 급여 인상에 대해 적용하고자 한다.
+-- 	현재 107명의 사원은 19개의 업무에 소속되어 근무 중이다(Distinct job_id). 
+-- 	이 중 5개의 업무 자들에 대한 급여 인상이 각각 결정되었고, 나머지 업무에 대해서는 인상이 동결되었다. 
+-- 	HR_REP(10%), MK_REP(12%), PR_REP(15%), SA_REP(18%), IT_PROG(20%)
+
+-- 31. HR 부서에서는 최상위 입사일에 해당하는 2001년부터 2003년까지 입사자들의 급여를 
+-- 	각각 5%, 3%, 1% 인상하여 지분에 따른 배당금으로 지급하고자 한다. 
+-- 	전체 사원들 중 해당 년도에 입사한 사원들의 급여를 검색하여 적용하고, 입사일자에 따른 오름차순 정렬을 수행하시오
+
+-- 32. 부서별 급여 합계를 구하고, 그 결과를 가지고 다음과 같이 표현하시오.
+-- 	
+-- 	Sum Salary > 100000 이면, “Excellent"
+-- 	Sum Salary > 50000 이면, “Good"
+-- 	Sum Salary > 10000 이면, “Medium"
+-- 	Sum Salary <= 10000 이면, “Well" 
+SELECT 
+	department_id, 
+    sum(salary) "TOTAL",
+    CASE
+		WHEN sum(salary) > 100000 THEN 'Excellent'
+        WHEN sum(salary) > 50000 THEN 'Good'
+        WHEN sum(salary) > 10000 THEN 'Medium'
+        ELSE 'Well'
+	END "Evaluation"
+FROM employees
+GROUP BY department_id;
+
+
+
+
+
+
