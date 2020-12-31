@@ -156,12 +156,47 @@ ORDER BY AVG(salary) DESC;
 -- 	Oxford에 근무하는 사원의 성과 이름(Name으로 별칭), 업무, 부서명, 도시명을 출력하시오. 
 -- 	이때 첫 번째 열은 회사명인 ‘SSAC’이라는 상수값이 출력되도록 하시오
 
+SELECT * FROM locations WHERE city = 'Oxford';
+
+-- ANSI SQL
+SELECT 'SSAC' AS COMPANY, e.employee_id, CONCAT(e.first_name, ' ', e.last_name) Name, e.job_id, d.department_name, l.city 
+FROM locations l
+INNER JOIN departments d
+ON l.location_id = d.location_id
+INNER JOIN employees e
+ON e.department_id = d.department_id
+WHERE l.city = 'Oxford';
+-- MySQL
+SELECT 'SSAC' AS COMPANY, e.employee_id, CONCAT(e.first_name, ' ', e.last_name) Name, e.job_id, d.department_name, l.city 
+FROM locations l, departments d, employees e
+WHERE l.location_id = d.location_id 
+	  AND 
+      e.department_id = d.department_id 
+      AND 
+      l.city = 'Oxford';
+
 -- 17. HR 데이터베이스에 있는 Employees, Departments 테이블의 구조를 파악한 후 
 -- 	사원수가 5명 이상인 부서의 부서명과 사원수를 사원수가 많은 순으로 정렬해서 출력하시오.
--- 	
+SELECT d.department_name, count(e.employee_id)
+FROM employees e
+INNER JOIN departments d
+ON e.department_id = d.department_id
+GROUP BY d.department_name
+HAVING count(e.employee_id) >= 5
+ORDER BY count(e.employee_id) DESC;
+
 -- 18. 각 사원의 급여에 따른 급여 등급을 보고하려고 한다. 
 -- 	급여 등급은 JOB_GRADES 테이블에 표시된다. 
 -- 	해당 테이블의 구조를 살펴본 후 사원의 성과 이름(Name으로 별칭), 업무, 부서명, 입사일, 급여, 급여등급을 출력하시오
+SELECT * FROM job_grades;
+SELECT 
+	e.employee_id, CONCAT(e.first_name, ' ', e.last_name) Name, e.job_id, 
+	d.department_name, e.hire_date, e.salary, j.grade_level -- , j.lowest_sal, j.highest_sal
+FROM employees e
+INNER JOIN departments d
+ON e.department_id = d.department_id
+CROSS JOIN job_grades j
+WHERE e.salary BETWEEN j.lowest_sal AND j.highest_sal;
 
 -- 19. 각 사원과 직속 상사와의 관계를 이용하여 다음과 같은 형식의 보고서를 작성하고자 한다.
 
@@ -169,3 +204,27 @@ ORDER BY AVG(salary) DESC;
 
 -- 	어떤 사원이 어떤 사원에서 보고하는지를 위 예를 참고하여 출력하시오. 
 -- 	단, 보고할 상사가 없는 사원이 있다면 그 정보도 포함하여 출력하고, 상사의 이름은 대문자로 출력하시오
+
+SELECT 
+--	   e2.employee_id, 
+--     CONCAT(e2.first_name, ' ', e2.last_name) "Employee Name", 
+--     e1.employee_id,
+--     CONCAT(e1.first_name, ' ', e1.last_name) "Manager Name"
+    CONCAT(e2.first_name, ' ', e2.last_name, ' report to ', IFNULL(e1.first_name, ' '), ' ', IFNULL(e1.last_name, ' ')) "Relation"
+FROM employees e1
+RIGHT OUTER JOIN employees e2
+ON e1.employee_id = e2.manager_id;
+
+-- 20. HR 부서의 어떤 사원은 급여정보를 조회하는 업무를 맡고 있다. 
+-- 	Tucker 사원(last_name)보다 급여를 많이 받고 있는 사원의 성과 이름(Name으로 별칭), 업무, 급여를 출력하시오
+
+-- 21. 사원의 급여 정보 중 업무별 최소 급여를 받고 있는 사원의 성과 이름(Name으로 별칭), 업무, 급여, 입사일을 출력하시오
+
+-- 22. 소속 부서의 평균 급여보다 많은 급여를 받는 사원에 대하여 사원의 성과 이름(Name으로 별칭), 급여, 부서번호, 업무를 출력하시오
+
+-- 23. 사원들의 지역별 근무 현황을 조회하고자 한다. 
+-- 	도시 이름이 영문 'O' 로 시작하는 지역에 살고 있는 사원의 사번, 이름, 업무, 입사일을 출력하시오
+
+-- 24. 모든 사원의 소속부서 평균연봉을 계산하여 사원별로 
+-- 	성과 이름(Name으로 별칭), 업무, 급여, 부서번호, 부서 평균연봉(Department Avg Salary로 별칭)을 출력하시오
+
