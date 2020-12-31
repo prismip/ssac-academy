@@ -72,5 +72,45 @@ ORDER BY hire_date ASC;
 --    이때 급여가 큰 순서대로 정렬하되, 급여가 같으면 수당율이 큰 순서대로 정렬하시오
 SELECT employee_id, CONCAT(first_name, ' ', last_name) Name, salary, commission_pct
 FROM employees
-WHERE commission_pct IS NOT NULL
+WHERE commission_pct IS NOT NULL -- commission_pct <> NULL (x)
 ORDER BY salary DESC, commission_pct DESC;
+
+-- 9. 이번 분기에 60번 IT 부서에서는 신규 프로그램을 개발하고 보급하여 회사에 공헌하여 해당 부서의 사원 급여를 12.3% 인상하기로 하였다. 
+--    60번 IT 부서 사원의 급여를 12.3% 인상하여 정수만(반올림) 표시하는 보고서를 작성하시오. 
+--    출력 형식은 사번, 이름과 성(Name으로 별칭), 급여, 인상된 급여(Increased Salary로 별칭)순으로 출력한다
+
+SELECT 
+	employee_id, CONCAT(first_name, ' ', last_name) Name, 
+	salary, ROUND(salary * 1.123, 0) "Increased Salary"
+FROM employees
+WHERE department_id = 60;
+
+-- 10. 각 이름이 ‘s’로 끝나는 사원들의 이름과 업무를 아래의 예와 같이 출력하고자 한다. 
+-- 	출력 시 성과 이름은 첫 글자가 대문자, 업무는 모두 대문자로 출력하고 머리글은 Employee JOBs.로 표시하시오
+
+-- 	예) Sigal Tobias is a PU_CLERK
+
+SELECT CONCAT(first_name, ' ', last_name, ' is a ', UPPER(job_id)) AS "Employee JOBs."
+FROM employees
+WHERE LOWER(first_name) LIKE '%s';
+
+-- 11. 모든 사원의 연봉을 표시하는 보고서를 작성하려고 한다. 
+-- 	보고서에 사원의 성과 이름(Name으로 별칭), 급여, 수당여부에 따른 연봉을 포함하여 출력하시오. 
+-- 	수당여부는 수당이 있으면 “Salary + Commission”, 수당이 없으면 “Salary only”라고 표시하고, 별칭은 적절히 붙인다. 
+-- 	또한 출력 시 연봉이 높은 순으로 정렬한다
+
+SELECT 
+	employee_id, CONCAT(first_name, ' ', last_name) Name, 
+    salary, 
+    (salary * 12) + (salary * 12 * IFNULL(commission_pct, 0)) "Annual Salary",
+    IF(commission_pct IS NULL, "Salary only", "Salary + Commission") "Annual Salary Type"
+--  CASE
+-- 		WHEN commission_pct IS NULL THEN "Salary only"
+--      ELSE "Salary + Commission"
+-- 	END "Annual Salary Type"
+FROM employees
+ORDER BY salary DESC;
+
+
+-- 12. 모든 사원들 성과 이름(Name으로 별칭), 입사일 그리고 입사일이 어떤 요일이였는지 출력하시오. 
+-- 	이때 주(week)의 시작인 일요일부터 출력되도록 정렬하시오
