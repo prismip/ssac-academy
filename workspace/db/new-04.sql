@@ -218,13 +218,34 @@ ON e1.employee_id = e2.manager_id;
 -- 20. HR 부서의 어떤 사원은 급여정보를 조회하는 업무를 맡고 있다. 
 -- 	Tucker 사원(last_name)보다 급여를 많이 받고 있는 사원의 성과 이름(Name으로 별칭), 업무, 급여를 출력하시오
 
+SELECT employee_id, CONCAT(first_name, ' ', last_name) Name, job_id, salary
+FROM employees
+WHERE salary > ( SELECT salary
+				 FROM employees
+                 WHERE last_name = 'Tucker' );
+
 -- 21. 사원의 급여 정보 중 업무별 최소 급여를 받고 있는 사원의 성과 이름(Name으로 별칭), 업무, 급여, 입사일을 출력하시오
+SELECT e1.employee_id, CONCAT(e1.first_name, ' ', e1.last_name) Name, e1.job_id, e1.salary
+FROM employees e1
+WHERE e1.salary = ( SELECT min(e2.salary) FROM employees e2 WHERE e2.job_id = e1.job_id );
 
 -- 22. 소속 부서의 평균 급여보다 많은 급여를 받는 사원에 대하여 사원의 성과 이름(Name으로 별칭), 급여, 부서번호, 업무를 출력하시오
+SELECT e1.employee_id, CONCAT(e1.first_name, ' ', e1.last_name) Name, e1.department_id, e1.job_id, e1.salary
+FROM employees e1
+WHERE e1.salary > ( SELECT avg(e2.salary) FROM employees e2 WHERE e2.department_id = e1.department_id );
 
 -- 23. 사원들의 지역별 근무 현황을 조회하고자 한다. 
--- 	도시 이름이 영문 'O' 로 시작하는 지역에 살고 있는 사원의 사번, 이름, 업무, 입사일을 출력하시오
+-- 	도시 이름이 영문 'O' 로 시작하는 지역에 살고 있는 사원의 사번, 이름, 업무, 입사일을 출력하시오 (서브쿼리를 사용해서 조회하세요)
 
 -- 24. 모든 사원의 소속부서 평균연봉을 계산하여 사원별로 
 -- 	성과 이름(Name으로 별칭), 업무, 급여, 부서번호, 부서 평균연봉(Department Avg Salary로 별칭)을 출력하시오
+
+SELECT 
+	e1.employee_id, 
+    CONCAT(e1.first_name, ' ', e1.last_name) Name, 
+    e1.department_id, 
+    e1.job_id, 
+    e1.salary,
+    ( SELECT ROUND(AVG(e2.salary), 0) FROM employees e2 WHERE e2.department_id = e1.department_id ) "부서평균"
+FROM employees e1;
 
