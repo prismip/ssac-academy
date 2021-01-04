@@ -1,0 +1,114 @@
+-- 1. 응답 데이터 구성
+{'createDt': '2020-12-18 09:37:26.928', 발표일
+ 'deathCnt': '1', 사망자
+ 'defCnt': '2320', 감염자
+ 'gubun': '검역', 지역
+ 'gubunCn': '隔離區', 지역
+ 'gubunEn': 'Lazaretto', 지역
+ 'incDec': '9', 전일대비증가
+ 'isolClearCnt': '1657', 격리해제
+ 'isolIngCnt': '662', 격리중
+ 'localOccCnt': '0', 지역발생
+ 'overFlowCnt': '9', 해외발생
+ 'qurRate': '-', 10만명당발생율
+ 'seq': '6391', 순서번호
+ 'stdDay': '2020년 12월 18일 00시', 기준일
+ 'updateDt': 'null'} 수정일
+ 
+-- 2. 테이블 구현
+create table infection_count
+(
+	global_seq int not null auto_increment, -- 순서번호
+	count_date date not null, -- 기준일자
+	count_date_seq int default (1), -- 기준일내순서번호
+	created_date datetime not null, -- 발표일자및시간
+	updated_date datetime not null, -- 수정일자및시간
+	region_name varchar(30) not null, -- 지역명
+	infection_count int not null, -- 감염자수
+	increased_count int not null, -- 전일대비증가수
+	on_quarantine int not null, -- 자가격리중
+	release_quarantine int not null, -- 자가격리해제
+	death_count int not null, -- 사망자수
+	local int not null, -- 국내발생
+	overseas int not null, -- 국외발생
+	infection_rate float(5, 2) not null, -- 100,000명당 발생율
+	constraint pk_infection_count PRIMARY KEY (global_seq)
+);
+
+-- 3. 데이터베이스 저장 구현
+
+columns = [
+	'global_seq', 'count_date', 'count_date_seq', 'created_date', 'updated_date', 'region_name', 'infection_count', 
+    'increased_count', 'on_quarantine', 'release_quarantine', 'death_count', 'local', 'overseas', 'infection_rate'
+]
+
+keys = [
+	'seq', 'stdDay', 'count_date_seq', 'createDt', 'updateDt', 'gubun', 'defCnt', 'incDec',
+	'isolIngCnt', 'isolClearCnt', 'deathCnt', 'localOccCnt', 'overFlowCnt', 'qurRate'
+]
+
+key_column_map = { key: column for key, column in zip(keys, columns) }
+print( key_column_map )
+column_key_map = { column: key for key, column in zip(keys, columns) }
+print( column_key_map )
+
+len(keys), len(columns)
+
+-------------------------------------------------------------------------------------
+
+connection_info = { 'host': 'localhost', 'user': 'root', 'password': 'Pa$$w0rd', 'db': 'demodb_a', 'charset': 'utf8' }
+
+conn = pymysql.connect(**connection_info)
+cursor = conn.cursor()
+
+for value in values:
+
+    dt = datetime.strptime(value['stdDay'], "%Y년 %m월 %d일 %H시")
+    value['stdDay'] = datetime.strftime(dt, '%Y-%m-%d')
+    dt = datetime.strptime(value['createDt'], "%Y-%m-%d %H:%M:%S.%f")
+    value['createDt'] = datetime.strftime(dt, '%Y-%m-%d %H:%M:%S')
+
+    sql = "SELECT IFNULL(COUNT(*), 0) FROM infection_count WHERE count_date = %s and region_name = %s and created_date = %s"
+    cursor.execute(sql, (value['stdDay'], value['gubun'], value['createDt']))
+    if cursor.fetchone()[0] > 0:
+        continue    
+
+    try: value['isolIngCnt'] = value['isolIngCnt'] if value['isolIngCnt'] else '-1' 
+    except: value['isolIngCnt'] = '-1'
+
+    try: value['localOccCnt'] = value['localOccCnt'] if value['localOccCnt'] else '-1'
+    except: value['localOccCnt'] = '-1'
+
+    try: value['overFlowCnt'] = value['overFlowCnt'] if value['overFlowCnt'] else '-1'
+    except: value['overFlowCnt'] = '-1'
+
+    try: value['isolClearCnt'] = value['isolClearCnt'] if value['isolClearCnt'] else '-1'
+    except: value['isolClearCnt'] = '-1'  
+
+    try: value['qurRate'] = value['qurRate'] if value['qurRate'] else '-1'
+    except: value['qurRate'] = '-1'
+
+    try: value['defCnt'] = value['defCnt'] if value['defCnt'] else '-1'
+    except: value['defCnt'] = '-1'
+
+    sql = "SELECT IFNULL(MAX(count_date_seq), 0) FROM infection_count WHERE count_date = %s and region_name = %s"
+    cursor.execute(sql, (value['stdDay'], value['gubun']))
+    count_date_sequence = cursor.fetchone()[0]
+    value['count_date_seq'] = 1 if count_date_sequence == 0 else count_date_sequence + 1
+
+    if not value['updateDt'] or value['updateDt'] == 'null':
+        value['updateDt'] = value['createDt']
+    else:
+        dt = datetime.strptime(value['updateDt'], "%Y-%m-%d %H:%M:%S.%f")
+        value['updateDt'] = datetime.strftime(dt, '%Y-%m-%d %H:%M:%S')
+
+    value['qurRate'] = value['qurRate'] if value['qurRate'].isdigit() else '-1'  
+
+    sql = 'INSERT INTO infection_count VALUES(NULL, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)'
+    cursor.execute(sql, [ value[column_key_map[column]] for column in columns[1:] ])
+
+conn.commit()
+
+conn.close()
+
+
