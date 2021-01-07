@@ -295,33 +295,34 @@ $(function() { // jQuery의 시작점 (브라우저가 html을 모두 읽었을 
                     </tr>`;
 
     $('#btn_search').on('click', function(event) {
-        var key = $('#company_name').val();
+
+        event.preventDefault();
+        event.stopPropagation();
+
+        var key = $('#company_name').val(); // 입력한 검색어 읽기
+
+        if (!key) {
+            alert('검색어를 입력하세요');
+            return;
+        }
+
         // alert(key);
         $.ajax({
-            "url": "/stocks/search/" + key,
+            "url": "/stocks/search2/" + key,
             "method": "GET",
+            "dataType": "json",
             "success": function(data, status, xhr) {
                 
                 $('#stocks_table tbody').empty() // 기존의 TR 태그 제거
-                // alert(data);
-                // eval("a = 10"); // eval(문자열) -> 문자열을 코드로 변경 : "a = 10" -> a = 10;
-                // alert(a);
 
-                eval("data = " + data);
-                //alert(data[0]['pk']);
                 for (var idx = 0; idx < data.length; idx++) { 
                     var tr = $(list_tr_html_str);   // 테이블 행 만들기
-                    tr.attr('data-symbol', data[idx].pk) // 테이블 행에 데이터 저장
+                    tr.attr('data-symbol', data[idx].symbol) // 테이블 행에 데이터 저장
                     var tds = tr.find('td'); // tr 하위의 td 목록 찾기
                     tds.each(function(i, td) { // python enumerate
-                        if (i == 0) {
-                            $(td).text(data[idx].pk)
-                        } else {
-                            $(td).text(data[idx].fields[list_td_names[i]])
-                        }
+                        $(td).text(data[idx][list_td_names[i]])
                     });
                     $('#stocks_table tbody').append(tr); // 위에서 만든 행을 테이블에 추가
-
                 }
 
             }, 
@@ -347,8 +348,9 @@ $(function() { // jQuery의 시작점 (브라우저가 html을 모두 읽었을 
         // alert(symbol);
 
         $.ajax({
-            "url": "/stocks/detail/" + symbol,
+            "url": "/stocks/detail2/" + symbol,
             "method": "GET",
+            "dataType": "json",
             "success": function(data, status, xhr) {
                 // alert(data);
                 $('#company_card_title').text(data[0].name);

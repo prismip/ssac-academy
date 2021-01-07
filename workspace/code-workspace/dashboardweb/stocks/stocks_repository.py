@@ -17,7 +17,7 @@ class StocksRepository:
         keys = ["symbol", "market", "name", "sector", "industry", 'listing_date', "settle_month", "representative", "homepage", "region"]
         result = []
         for row in rows:
-            row_dict = { key:value for key, value in zip(keys, rows) }
+            row_dict = { key:value for key, value in zip(keys, row) }
             result.append(row_dict)
 
         conn.close()

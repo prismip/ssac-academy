@@ -11,7 +11,9 @@ from .models import StockMaster
 
 
 class HomeView(TemplateView):
-    template_name = "stocks/home.html"
+
+    # template_name = "stocks/home.html" # ORM 객체를 사용하는 화면
+    template_name = "stocks/home2.html"  # 직접 구현한 데이터베이스 연동 모듈 사용하는 화면
 
 class MarketInfoView(View):
     def get(self, request): # View에서 상속 받은 메서드 -> 재정의, 브라우저에서 get 요청을 보내면 호출되는 메서드
@@ -99,9 +101,7 @@ class StocksDetailView2(View):
         serialized_stocks = json.dumps([stock], ensure_ascii=False) #
         return HttpResponse(serialized_stocks, content_type="application/json")
 
-
-
-###########################################################
+####################################################################################################
 
 class AptHomeView(TemplateView):
     template_name = 'stocks/apt.html'
