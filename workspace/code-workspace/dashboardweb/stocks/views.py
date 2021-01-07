@@ -72,6 +72,33 @@ class StocksDetailView(View):
         serialized_stocks = json.dumps(stocks, ensure_ascii=False) #
         return HttpResponse(serialized_stocks, content_type="application/json")
 
+####################################################################################################
+
+class SearchView2(View):
+    def get(self, request, key):
+        from .stocks_repository import StocksRepository
+        import json
+
+        repository = StocksRepository()
+        searched_stocks = repository.select_stockmaster_by_name(key)
+        json_stocks = json.dumps(searched_stocks, ensure_ascii=False)
+        return HttpResponse(json_stocks, content_type="application/json")
+
+class StocksDetailView2(View):
+    def get(self, request, pk):
+
+        import FinanceDataReader as fdr
+        from .stocks_repository import StocksRepository
+        import json
+
+        stock = StocksRepository().select_stockmaster_by_symbol(pk)
+        
+        stock_info = fdr.DataReader(pk, '20200101').fillna('').reset_index()
+        stock_info["Date"] = stock_info['Date'].astype('string')
+        stock['stats'] = stock_info.values.tolist()
+        serialized_stocks = json.dumps([stock], ensure_ascii=False) #
+        return HttpResponse(serialized_stocks, content_type="application/json")
+
 
 
 ###########################################################
